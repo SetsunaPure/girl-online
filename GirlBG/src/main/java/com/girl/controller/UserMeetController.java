@@ -1,8 +1,10 @@
 package com.girl.controller;
 
 
+import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Exception.GirlException;
 import com.girl.service.IUserMeetService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +31,30 @@ public class UserMeetController {
 
     @PostMapping("/status")
     @ApiOperation("约会审核状态")
-    public ResponseApi getMeetStatus(@RequestBody String text){
-        String status = StringUtils.get("status", text);
-        String token = StringUtils.get("token", text);
+    public ResponseApi getMeetStatus(@RequestBody String text) {
 
-        return userMeetService.getMeetInfo(token, status);
+        try {
+            String status = StringUtils.get("status", text);
+            String token = StringUtils.get("token", text);
+
+            return userMeetService.getMeetInfo(token, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping("/operate")
     @ApiOperation("约会状态操作")
-    public ResponseApi operateMeet(@RequestBody String text){
-        String status = StringUtils.get("status", text);
-        String token = StringUtils.get("token", text);
-        String id = StringUtils.get("id", text);
+    public ResponseApi operateMeet(@RequestBody String text) {
+        try {
+            String status = StringUtils.get("status", text);
+            String token = StringUtils.get("token", text);
+            String id = StringUtils.get("id", text);
 
-        return userMeetService.operateMeet(token, id ,status);
+            return userMeetService.operateMeet(token, id, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 }
 

@@ -3,7 +3,6 @@ package com.girl.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.girl.Common.model.DepositInfo;
 import com.girl.Common.model.ResponseApi;
-import com.girl.core.entity.UserDynamic;
 import com.girl.core.entity.UserTixian;
 import com.girl.core.mapper.UserTixianMapper;
 import com.girl.service.IUserTixianService;
@@ -14,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.girl.Common.BgStatusEnum.RESPONSE_ERROR;
-import static com.girl.Common.BgStatusEnum.RESPONSE_OK;
+import static com.girl.Common.enums.BgStatusEnum.RESPONSE_ERROR;
+import static com.girl.Common.enums.BgStatusEnum.RESPONSE_OK;
 
 /**
  * <p>

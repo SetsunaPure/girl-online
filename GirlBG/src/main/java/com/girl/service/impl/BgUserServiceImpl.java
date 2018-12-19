@@ -2,7 +2,11 @@ package com.girl.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.girl.Common.model.PubApiToken;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.girl.Common.enums.BgStatusEnum;
+import com.girl.Common.model.BgApiToken;
+import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseLogin;
 import com.girl.core.entity.BgUser;
 import com.girl.core.mapper.BgUserMapper;
 import com.girl.service.IBgUserService;
@@ -11,6 +15,7 @@ import com.girl.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.girl.Common.utils.UUIDUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -31,10 +36,16 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
     RedisService redisService;
 
     @Override
-    public JSONObject login(String username, String password){
+    @Transactional
+    public ResponseLogin login(String username, String password){
+
         BgUser bgUser = new BgUser();
         bgUser.setName(username);
         BgUser rtBguser = bg.selectOne(bgUser);
+
+        if(rtBguser == null){
+            return new ResponseLogin(400, "用户名不存在", "", "");
+        }
 
         boolean isEq = password.equals(rtBguser.getPwd());
 
@@ -42,35 +53,43 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
 
         String token = UUIDUtils.getToken();
 
-        PubApiToken apitoken = new PubApiToken();
+        BgApiToken apitoken = new BgApiToken();
         apitoken.setCreateTime(new Date());
         apitoken.setToken(token);
-        apitoken.setAuthsId(rtBguser.getUserId());
+        apitoken.setOperteId(rtBguser.getUserId());
 
-        redisService.add(token, apitoken);
+        redisService.set(token, apitoken.toString());
 
-        System.out.println(redisService.get(token));
-        int code;
-        String msg;
-        if (isEq) {
-            code = 200;
-            msg = "正常返回";
-        } else {
-            code = 400;
-            msg = "返回異常";
-        }
+        int code = isEq ? 200 : 400;
+        String msg = isEq ? "返回正常" : "密码错误";
 
-        JSONObject json = new JSONObject();
-        json.put("code", code);
-        json.put("msg", msg);
-        json.put("token", apitoken);
-        json.put("data", "");
-
-        return json;
+        return new ResponseLogin(code, msg, token, "");
     }
 
-    public JSONObject addUser(String token){
-        return null;
+    @Override
+    public ResponseApi addUser(String token, String name, String pwd){
+        try {
+            BgUser bu = new BgUser();
+            bu.setName(name);
+            bu.setPwd(pwd);
+            bu.setIsAdmin(0);
+            Integer res = bg.insert(bu);
+            return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "删除客服失败");
+        }
+    }
+
+    @Override
+    public ResponseApi delUser(String token, String id){
+        try {
+            Integer res = bg.delete(new EntityWrapper<BgUser>().eq("id={0}", id));
+            return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "删除客服失败");
+        }
     }
 
 }

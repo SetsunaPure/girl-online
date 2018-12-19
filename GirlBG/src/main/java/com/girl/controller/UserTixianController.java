@@ -1,8 +1,10 @@
 package com.girl.controller;
 
 
+import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Exception.GirlException;
 import com.girl.service.IUserTixianService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +32,28 @@ public class UserTixianController {
     @PostMapping("/status")
     @ApiOperation("提现状态")
     public ResponseApi drawingStatus(@RequestBody String text) {
-        String status = StringUtils.get("status", text);
-        String token = StringUtils.get("token", text);
+        try {
+            String status = StringUtils.get("status", text);
+            String token = StringUtils.get("token", text);
 
-        return userTixianService.getDrawingStatus(token, status);
+            return userTixianService.getDrawingStatus(token, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping("/operate")
     @ApiOperation("提现操作")
     public ResponseApi drawingOperate(@RequestBody String text) {
-        String status = StringUtils.get("status", text);
-        String token = StringUtils.get("token", text);
-        String id = StringUtils.get("id", text);
+        try {
+            String status = StringUtils.get("status", text);
+            String token = StringUtils.get("token", text);
+            String id = StringUtils.get("id", text);
 
-        return userTixianService.operateDrawing(token, id, status);
+            return userTixianService.operateDrawing(token, id, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 }
 

@@ -1,5 +1,7 @@
 package com.girl.Common.utils;
 
+import com.girl.Exception.GirlException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -150,7 +152,11 @@ public abstract class StringUtils {
         return flag;
     }
 
-    public static String get(String key, String text) {
-        return text.split(key)[1].split("=")[1].split("&")[0];
+    public static String get(String key, String text) throws GirlException {
+        try {
+            return text.split(key)[1].split("=")[1].split("&")[0];
+        } catch (Exception e) {
+            throw new GirlException("解析" + key + "异常");
+        }
     }
 }

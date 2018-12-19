@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+#日志记录
+logging:
+  config: classpath:log4j2/log4j2.xml
 
 spring:
   datasource:
@@ -38,7 +41,8 @@ spring:
     database: 1
     timeout: 5000
     # Redis服务器地址
-    host: 47.105.130.223
+#    host: 47.105.130.223
+    host: 127.0.0.1
     # Redis服务器连接端口
     port: 6379
     # Redis服务器连接密码（默认为空）
@@ -67,7 +71,8 @@ mybatis-plus:
                         com.girl.core.entity.UserTixian,
                         com.girl.core.entity.UserMeet,
                         com.girl.core.entity.UserIdentity,
-                        com.girl.core.entity.UserCertInfo
+                        com.girl.core.entity.UserCertInfo,
+                        com.girl.core.entiry.PubConfig
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 2

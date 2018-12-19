@@ -1,7 +1,7 @@
 package com.girl.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.girl.Common.BgStatusEnum;
+import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.CertInfo;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserCertInfo;

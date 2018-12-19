@@ -1,8 +1,10 @@
 package com.girl.controller;
 
 
+import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Exception.GirlException;
 import com.girl.service.IUserCertInfoService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author wangpei
@@ -29,23 +31,29 @@ public class UserCertInfoController {
 
     @PostMapping("/status")
     @ApiOperation("状态")
-    public ResponseApi certInfoStatus(@RequestBody String text){
+    public ResponseApi certInfoStatus(@RequestBody String text) {
+        try {
+            String status = StringUtils.get("status", text);
+            String token = StringUtils.get("token", text);
 
-        String status = StringUtils.get("status", text);
-        String token = StringUtils.get("token", text);
-
-        return userCertInfoService.certInfoStatus(token, status);
+            return userCertInfoService.certInfoStatus(token, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping("/operate")
     @ApiOperation("操作")
-    public ResponseApi operateCertInfo(@RequestBody String text){
+    public ResponseApi operateCertInfo(@RequestBody String text) {
+        try {
+            String id = StringUtils.get("id", text);
+            String token = StringUtils.get("token", text);
+            String status = StringUtils.get("status", text);
 
-        String id = StringUtils.get("id", text);
-        String token = StringUtils.get("token", text);
-        String status = StringUtils.get("status", text);
-
-        return userCertInfoService.operateCertInfo(token, id, status);
+            return userCertInfoService.operateCertInfo(token, id, status);
+        } catch (GirlException e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
     }
 
 }

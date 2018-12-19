@@ -1,8 +1,6 @@
 package com.girl.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.girl.Common.model.DynamicContext;
 import com.girl.Common.model.DynamicInfo;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserDynamic;
@@ -12,12 +10,10 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.girl.Common.BgStatusEnum.RESPONSE_ERROR;
-import static com.girl.Common.BgStatusEnum.RESPONSE_OK;
+import static com.girl.Common.enums.BgStatusEnum.RESPONSE_ERROR;
+import static com.girl.Common.enums.BgStatusEnum.RESPONSE_OK;
 
 /**
  * <p>
