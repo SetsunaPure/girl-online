@@ -1,6 +1,7 @@
 package com.girl.Common.model;
 
-import com.girl.Common.BgStatusEnum;
+
+import com.girl.Common.enums.BgStatusEnum;
 
 public class ResponseApi {
 

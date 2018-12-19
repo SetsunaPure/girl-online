@@ -1,0 +1,75 @@
+{
+  "charset": "utf-8",
+  "method": "aipcrm.balance",
+  "format": "JSON",
+  "notify_url": null,
+  "version": "1.0",
+  "app_auth_token": null,
+  "partner_id": "18072301",
+  "ex_param": null,
+  "channel_type": "1102",
+  "app_id": "*",
+  "sign_type": "MD5",
+  "timestamp": "2018-09-29 17:55:35",
+  "biz_content": {
+    "store_id": "8888",
+    "code": "415530684453",
+    "pay_amt": 110230,
+    "operator_id": "988881",
+    "station_id": "0001",
+    "actual_amt": 110230,
+    "pos_billno": "88882018092917552500010001",
+    "sale_type": "sale",
+    "amt": 114236,
+    "business_date": "2018-09-29",
+    "change_amt": 0,
+    "pos_saleno": "201809291755250001",
+    "sale_time": "2018-09-29 17:55:35",
+    "code_type": "1",
+    "plulist": [
+      {
+        "plu_code": "10005",
+        "price": 8800,
+        "num": "2",
+        "plu_name": "山核桃仁罐装",
+        "amt": 16980,
+        "tran_price": 8800,
+        "seq": 1,
+        "cls_code": "101012",
+        "ori_amt": 17600
+      },
+      {
+        "plu_code": "10003",
+        "price": 3800,
+        "num": "0.562",
+        "plu_name": "霜糖山楂",
+        "amt": 2060,
+        "tran_price": 3800,
+        "seq": 2,
+        "cls_code": "101015",
+        "ori_amt": 2136
+      },
+      {
+        "plu_code": "10091",
+        "price": 18900,
+        "num": "5",
+        "plu_name": "手剥松子390g",
+        "amt": 91190,
+        "tran_price": 18900,
+        "seq": 3,
+        "cls_code": "101012",
+        "ori_amt": 94500
+      }
+    ],
+    "pays": [
+      {
+        "payno": "888820180929175525000100010",
+        "code": "0",
+        "pay_amt": "110230",
+        "name": "现金",
+        "code_type": "2"
+      }
+    ]
+  }
+
+}
