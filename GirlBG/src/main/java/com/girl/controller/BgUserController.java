@@ -30,12 +30,15 @@ public class BgUserController {
     @PostMapping("/userLogin")
     @ResponseBody
     @ApiOperation("登录")
-    public ResponseLogin userLogin(@RequestBody String text) {
+    public ResponseLogin userLogin(@RequestBody JSONObject text) {
         try {
-            String username = StringUtils.get("username", text);
-            String pwd = StringUtils.get("password", text);
+            String username = text.getString("username");
+            String pwd = text.getString("password");
+            if(!StringUtils.areNotEmpty(username, pwd)){
+                return new ResponseLogin(401, "用户名密码不能为空",null,null);
+            }
             return bgUserService.login(username, pwd);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseLogin(400, e.getMessage(), "", "");
         }
 
@@ -43,25 +46,31 @@ public class BgUserController {
 
     @PostMapping("/customerservice/add")
     @ApiOperation("新增用户")
-    public ResponseApi addUser(@RequestBody String text) {
+    public ResponseApi addUser(@RequestBody JSONObject text) {
         try {
-            String token = StringUtils.get("token", text);
-            String name = StringUtils.get("name", text);
-            String pwd = StringUtils.get("pwd", text);
+            String token = text.getString("token");
+            String name = text.getString("name");
+            String pwd = text.getString("pwd");
+            if(!StringUtils.areNotEmpty(name, pwd,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "用户名、参数、认证不能为空");
+            }
             return bgUserService.addUser(token, name, pwd);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }
 
     @PostMapping("/customerservice/delete")
     @ApiOperation("删除用户")
-    public ResponseApi delUser(@RequestBody String text) {
+    public ResponseApi delUser(@RequestBody JSONObject text) {
         try {
-            String token = StringUtils.get("token", text);
-            String id = StringUtils.get("id", text);
+            String token = text.getString("token");
+            String id = text.getString("id");
+            if(!StringUtils.areNotEmpty(token, id)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id和认证不能为空");
+            }
             return bgUserService.delUser(token, id);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }

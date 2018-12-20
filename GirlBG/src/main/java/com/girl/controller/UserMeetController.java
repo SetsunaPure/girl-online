@@ -1,6 +1,7 @@
 package com.girl.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
@@ -31,28 +32,32 @@ public class UserMeetController {
 
     @PostMapping("/status")
     @ApiOperation("约会审核状态")
-    public ResponseApi getMeetStatus(@RequestBody String text) {
+    public ResponseApi getMeetStatus(@RequestBody JSONObject text) {
 
         try {
-            String status = StringUtils.get("status", text);
-            String token = StringUtils.get("token", text);
-
+            String status = text.getString("status");
+            String token = text.getString("token");
+            if(!StringUtils.areNotEmpty(status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
+            }
             return userMeetService.getMeetInfo(token, status);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }
 
     @PostMapping("/operate")
     @ApiOperation("约会状态操作")
-    public ResponseApi operateMeet(@RequestBody String text) {
+    public ResponseApi operateMeet(@RequestBody JSONObject text) {
         try {
-            String status = StringUtils.get("status", text);
-            String token = StringUtils.get("token", text);
-            String id = StringUtils.get("id", text);
-
+            String status = text.getString("status");
+            String token = text.getString("token");
+            String id = text.getString("id");
+            if(!StringUtils.areNotEmpty(id, status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
+            }
             return userMeetService.operateMeet(token, id, status);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }

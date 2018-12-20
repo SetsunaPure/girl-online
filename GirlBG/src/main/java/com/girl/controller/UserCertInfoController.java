@@ -1,6 +1,7 @@
 package com.girl.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
@@ -31,27 +32,31 @@ public class UserCertInfoController {
 
     @PostMapping("/status")
     @ApiOperation("状态")
-    public ResponseApi certInfoStatus(@RequestBody String text) {
+    public ResponseApi certInfoStatus(@RequestBody JSONObject text) {
         try {
-            String status = StringUtils.get("status", text);
-            String token = StringUtils.get("token", text);
-
+            String status = text.getString("status");
+            String token = text.getString("token");
+            if(!StringUtils.areNotEmpty(status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
+            }
             return userCertInfoService.certInfoStatus(token, status);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }
 
     @PostMapping("/operate")
     @ApiOperation("操作")
-    public ResponseApi operateCertInfo(@RequestBody String text) {
+    public ResponseApi operateCertInfo(@RequestBody JSONObject text) {
         try {
-            String id = StringUtils.get("id", text);
-            String token = StringUtils.get("token", text);
-            String status = StringUtils.get("status", text);
-
+            String id = text.getString("id");
+            String token = text.getString("token");
+            String status = text.getString("status");
+            if(!StringUtils.areNotEmpty(id, status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
+            }
             return userCertInfoService.operateCertInfo(token, id, status);
-        } catch (GirlException e) {
+        } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
     }

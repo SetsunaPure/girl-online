@@ -3,7 +3,8 @@ package com.girl.Common.enums;
 public enum BgStatusEnum {
 
     RESPONSE_OK(200, "返回正常"),
-    RESPONSE_ERROR(400, "返回异常");
+    RESPONSE_ERROR(400, "返回异常"),
+    RESPONSE_EMPTY(401, "参数为空");
 
     private int code;
     private String message;
