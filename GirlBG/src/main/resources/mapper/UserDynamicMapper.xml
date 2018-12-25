@@ -36,7 +36,7 @@
       ON
 	    dynamic.uid = info.id
       WHERE
-	    dynamic.bg_status = #{status}
+	    dynamic.status = #{status}
       ORDER BY
 	    dynamic.uid
     </select>

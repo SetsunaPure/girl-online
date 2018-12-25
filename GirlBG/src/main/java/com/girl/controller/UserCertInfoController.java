@@ -3,10 +3,12 @@ package com.girl.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.enums.BgStatusEnum;
+import com.girl.Common.model.BgApiToken;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
 import com.girl.Exception.GirlException;
 import com.girl.service.IUserCertInfoService;
+import com.girl.service.RedisService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +38,11 @@ public class UserCertInfoController {
         try {
             String status = text.getString("status");
             String token = text.getString("token");
+
             if(!StringUtils.areNotEmpty(status, token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
             }
+
             return userCertInfoService.certInfoStatus(token, status);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());

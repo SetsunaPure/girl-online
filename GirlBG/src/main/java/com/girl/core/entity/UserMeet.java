@@ -71,8 +71,8 @@ public class UserMeet extends Model<UserMeet> {
     /**
      * 审核状态（0待审核，1屏蔽，2通过）
      */
-    @TableField("bg_status")
-    private Integer bgStatus;
+    @TableField("status")
+    private Integer status;
 
 
     public Long getId() {
@@ -172,11 +172,11 @@ public class UserMeet extends Model<UserMeet> {
     }
 
     public Integer getBgStatus() {
-        return bgStatus;
+        return status;
     }
 
-    public void setBgStatus(Integer bgStatus) {
-        this.bgStatus = bgStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
@@ -199,7 +199,7 @@ public class UserMeet extends Model<UserMeet> {
                 ", createLongitude=" + createLongitude +
                 ", createLatitude=" + createLatitude +
                 ", acceptSex=" + acceptSex +
-                ", bgStatus=" + bgStatus +
+                ", status=" + status +
                 "}";
     }
 }

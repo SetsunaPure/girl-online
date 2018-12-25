@@ -7,12 +7,14 @@ import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.BgApiToken;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.model.ResponseLogin;
+import com.girl.Common.utils.RedisUtils;
 import com.girl.core.entity.BgUser;
 import com.girl.core.mapper.BgUserMapper;
 import com.girl.service.IBgUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.girl.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import com.girl.Common.utils.UUIDUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +60,7 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
         apitoken.setToken(token);
         apitoken.setOperteId(rtBguser.getUserId());
 
-        redisService.set(token, apitoken.toString());
+        redisService.set(token, apitoken);
 
         int code = isEq ? 200 : 400;
         String msg = isEq ? "返回正常" : "密码错误";
@@ -69,22 +71,33 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
     @Override
     public ResponseApi addUser(String token, String name, String pwd){
         try {
+            if (RedisUtils.isTokenNull(redisService,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
+
             BgUser bu = new BgUser();
             bu.setName(name);
             bu.setPwd(pwd);
             bu.setIsAdmin(0);
             Integer res = bg.insert(bu);
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
+        }catch (DuplicateKeyException e){
+            e.printStackTrace();
+            return new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "删除客服失败");
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "新增客服失败");
         }
     }
 
     @Override
     public ResponseApi delUser(String token, String id){
         try {
-            Integer res = bg.delete(new EntityWrapper<BgUser>().eq("id={0}", id));
+            if (RedisUtils.isTokenNull(redisService,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
+
+            Integer res = bg.delete(new EntityWrapper<BgUser>().eq("user_id={0}", id));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         }catch (Exception e){
             e.printStackTrace();

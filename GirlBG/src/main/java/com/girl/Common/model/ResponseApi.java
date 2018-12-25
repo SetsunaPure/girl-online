@@ -2,6 +2,7 @@ package com.girl.Common.model;
 
 
 import com.girl.Common.enums.BgStatusEnum;
+import com.girl.core.entity.BgUser;
 
 public class ResponseApi {
 
@@ -20,6 +21,11 @@ public class ResponseApi {
     public ResponseApi(BgStatusEnum bgStatusEnum, Object data){
         this.code = bgStatusEnum.getCode();
         this.data = data;
+        this.msg = bgStatusEnum.getMessage();
+    }
+
+    public ResponseApi(BgStatusEnum bgStatusEnum){
+        this.code = bgStatusEnum.getCode();
         this.msg = bgStatusEnum.getMessage();
     }
 

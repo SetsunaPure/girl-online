@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 用户钱包表
+ * 用户动态表
  * </p>
  *
  * @author wangpei
@@ -62,8 +62,8 @@ public class UserDynamic extends Model<UserDynamic> {
     /**
      * 操作状态(1待审核、2屏蔽、3通过)
      */
-    @TableField("bg_status")
-    private Integer bgStatus;
+    @TableField("status")
+    private Integer status;
 
 
     public Long getId() {
@@ -146,12 +146,12 @@ public class UserDynamic extends Model<UserDynamic> {
         this.type = type;
     }
 
-    public Integer getBgStatus() {
-        return bgStatus;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setBgStatus(Integer bgStatus) {
-        this.bgStatus = bgStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
@@ -172,7 +172,7 @@ public class UserDynamic extends Model<UserDynamic> {
                 ", locationLongitude=" + locationLongitude +
                 ", locationLatitude=" + locationLatitude +
                 ", type=" + type +
-                ", bgStatus=" + bgStatus +
+                ", status=" + status +
                 "}";
     }
 }

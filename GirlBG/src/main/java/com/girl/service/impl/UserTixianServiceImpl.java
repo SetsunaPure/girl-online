@@ -1,12 +1,15 @@
 package com.girl.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.DepositInfo;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.utils.RedisUtils;
 import com.girl.core.entity.UserTixian;
 import com.girl.core.mapper.UserTixianMapper;
 import com.girl.service.IUserTixianService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.girl.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +33,17 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
     @Autowired
     private UserTixianMapper userTixianMapper;
 
+    @Autowired
+    private RedisService redisService;
+
     @Override
     public ResponseApi getDrawingStatus(String token, String status){
         try {
+
+            if (RedisUtils.isTokenNull(redisService,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
+
             List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(Integer.parseInt(status));
             return new ResponseApi(RESPONSE_OK, lstDepositInfo);
         }catch(Exception e){
@@ -45,6 +56,11 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
     @Transactional
     public ResponseApi operateDrawing(String token, String id, String status){
         try {
+
+            if (RedisUtils.isTokenNull(redisService,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
+
             //更改提现状态
             Integer tixianStatus = 1;
             if (status.equals("3") ) {

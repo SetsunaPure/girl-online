@@ -5,47 +5,40 @@ import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.StringUtils;
-import com.girl.Exception.GirlException;
-import com.girl.service.IUserDynamicService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.stereotype.Controller;
+
 /**
- * <p>
- * 用户钱包表 前端控制器
- * </p>
+ * 用户管理
  *
  * @author wangpei
- * @since 2018-12-13
+ * @since 2018-12-25
  */
 @RestController
-@RequestMapping("/bg/dynamiccheck")
-public class UserDynamicController {
-
-    @Autowired
-    IUserDynamicService userDynamicService;
+@RequestMapping("/bg/usermanage")
+public class UserReportController {
 
     @PostMapping("/status")
-    @ApiOperation("状态")
-    public ResponseApi dynamicStatus(@RequestBody JSONObject text) {
+    @ApiOperation("用户状态")
+    public ResponseApi getUserManageStatus(@RequestBody JSONObject text) {
         try {
             String status = text.getString("status");
             String token = text.getString("token");
-//        String token = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", 0);
-
-            if(!StringUtils.areNotEmpty(status, token)){
+            if (!StringUtils.areNotEmpty(status, token)) {
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
             }
-            return userDynamicService.getDynamicData(token, status);
+            return null;
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
+
     }
 
     @PostMapping("/operate")
-    @ApiOperation("操作")
-    public ResponseApi dynamicOperation(@RequestBody JSONObject text) {
+    @ApiOperation("用户审核操作")
+    public ResponseApi userManageOperate(@RequestBody JSONObject text) {
         try {
             String status = text.getString("status");
             String token = text.getString("token");
@@ -53,7 +46,7 @@ public class UserDynamicController {
             if(!StringUtils.areNotEmpty(id, status, token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
             }
-            return userDynamicService.operateDynamic(token, id, status);
+            return null;
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }

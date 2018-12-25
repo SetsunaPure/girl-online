@@ -20,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, uid, title, desc, meet_time AS meetTime, meet_time_part AS meetTimePart, meet_place AS meetPlace, show_images AS showImages, create_time AS createTime, create_longitude AS createLongitude, create_latitude AS createLatitude, accept_sex AS acceptSex, bg_status AS bgStatus
+        id, uid, title, desc, meet_time AS meetTime, meet_time_part AS meetTimePart, meet_place AS meetPlace, show_images AS showImages, create_time AS createTime, create_longitude AS createLongitude, create_latitude AS createLatitude, accept_sex AS acceptSex, status AS status
     </sql>
 
     <select id="getMeetInfo" resultType="com.girl.Common.model.MeetInfo">
@@ -40,7 +40,7 @@
         ON
             meet.uid = info.id
         WHERE
-            meet.bg_status = 0
+            meet.status = 0
         ORDER BY
             meet.meet_time
     </select>
