@@ -1,5 +1,6 @@
 package com.girl.core.mapper;
 
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.girl.Common.model.DynamicInfo;
 import com.girl.core.entity.UserDynamic;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
@@ -16,6 +17,6 @@ import java.util.List;
  */
 public interface UserDynamicMapper extends BaseMapper<UserDynamic> {
 
-    List<DynamicInfo> getDynamicInfo(@Param(value = "status") Integer status);
+    List<DynamicInfo> getDynamicInfo(Pagination page, @Param(value = "status") Integer status);
 
 }

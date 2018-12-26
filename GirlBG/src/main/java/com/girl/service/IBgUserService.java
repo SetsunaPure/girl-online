@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.model.ResponseLogin;
 import com.girl.core.entity.BgUser;
@@ -15,9 +16,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IBgUserService extends IService<BgUser> {
 
-    ResponseLogin login(String username, String password);
+    ResponseLogin login(JSONObject text);
 
-    ResponseApi addUser(String token, String name, String pwd);
+    ResponseApi addUser(JSONObject text);
 
-    ResponseApi delUser(String token, String id);
+    ResponseApi delUser(JSONObject text);
 }

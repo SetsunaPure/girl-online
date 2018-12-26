@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserReport;
 import com.baomidou.mybatisplus.service.IService;
@@ -14,7 +15,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IUserReportService extends IService<UserReport> {
 
-    ResponseApi getUserManageStatus(String token, String status);
+    ResponseApi getUserManageStatus(JSONObject text);
 
-    ResponseApi userManageOperate(String token, String id, String status);
+    ResponseApi userManageOperate(JSONObject text);
 }

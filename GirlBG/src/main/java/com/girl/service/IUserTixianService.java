@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserTixian;
 import com.baomidou.mybatisplus.service.IService;
@@ -14,7 +15,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IUserTixianService extends IService<UserTixian> {
 
-    ResponseApi getDrawingStatus(String token, String status);
+    ResponseApi getDrawingStatus(JSONObject text);
 
-    ResponseApi operateDrawing(String token, String id, String status);
+    ResponseApi operateDrawing(JSONObject text);
 }

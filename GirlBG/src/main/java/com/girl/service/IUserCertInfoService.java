@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserCertInfo;
 import com.baomidou.mybatisplus.service.IService;
@@ -14,7 +15,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IUserCertInfoService extends IService<UserCertInfo> {
 
-    ResponseApi certInfoStatus(String token, String status);
+    ResponseApi certInfoStatus(JSONObject text);
 
-    ResponseApi operateCertInfo(String token, String id, String status);
+    ResponseApi operateCertInfo(JSONObject text);
 }

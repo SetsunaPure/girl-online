@@ -3,12 +3,16 @@ package com.girl.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.BgApiToken;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.model.ResponseLogin;
 import com.girl.Common.utils.RedisUtils;
+import com.girl.Common.utils.StringUtils;
+import com.girl.core.entity.BgToken;
 import com.girl.core.entity.BgUser;
+import com.girl.core.mapper.BgTokenMapper;
 import com.girl.core.mapper.BgUserMapper;
 import com.girl.service.IBgUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -37,40 +41,65 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
     @Autowired
     RedisService redisService;
 
+    @Autowired
+    BgTokenMapper tokenMapper;
+
     @Override
     @Transactional
-    public ResponseLogin login(String username, String password){
+    public ResponseLogin login(JSONObject text){
+
+        String username = text.getString("username");
+        String pwd = text.getString("password");
+
+        if(!StringUtils.areNotEmpty(username, pwd)){
+            return new ResponseLogin(401, "用户名密码不能为空",null,null);
+        }
 
         BgUser bgUser = new BgUser();
         bgUser.setName(username);
         BgUser rtBguser = bg.selectOne(bgUser);
 
         if(rtBguser == null){
-            return new ResponseLogin(400, "用户名不存在", "", "");
+            return new ResponseLogin(BgStatusEnum.RESPONSE_USER_NOT_EXIST);
         }
 
-        boolean isEq = password.equals(rtBguser.getPwd());
+        boolean isEq = pwd.equals(rtBguser.getPwd());
 
-        /** todo:判断之前是否有登录（redis中是否有token信息） */
+        if(!isEq){
+            return new ResponseLogin(BgStatusEnum.RESPONSE_PASSWORD_ERROR);
+        }
+
+        String dbToken = bg.getTokenByName(username);
+        if(null != dbToken){
+            return new ResponseLogin(BgStatusEnum.RESPONSE_IS_LOGIN, dbToken);
+        }
 
         String token = UUIDUtils.getToken();
 
-        BgApiToken apitoken = new BgApiToken();
-        apitoken.setCreateTime(new Date());
-        apitoken.setToken(token);
-        apitoken.setOperteId(rtBguser.getUserId());
+        BgToken bgToken = new BgToken();
+        bgToken.setCreateTime(new Date());
+        bgToken.setToken(token);
+        bgToken.setLoginId(rtBguser.getUserId());
 
-        redisService.set(token, apitoken);
+        tokenMapper.insert(bgToken);
 
-        int code = isEq ? 200 : 400;
-        String msg = isEq ? "返回正常" : "密码错误";
+        redisService.set(token, bgToken);
 
-        return new ResponseLogin(code, msg, token, "");
+//        List<BgUser> d = selectPage(new Page<BgUser>(1,50)).getRecords();
+
+        return new ResponseLogin(BgStatusEnum.RESPONSE_OK, token);
     }
 
     @Override
-    public ResponseApi addUser(String token, String name, String pwd){
+    public ResponseApi addUser(JSONObject text){
         try {
+            String token = text.getString("token");
+            String name = text.getString("name");
+            String pwd = text.getString("pwd");
+            if(!StringUtils.areNotEmpty(name, pwd,token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "用户名、参数、认证不能为空");
+            }
+
             if (RedisUtils.isTokenNull(redisService,token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
@@ -91,8 +120,14 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
     }
 
     @Override
-    public ResponseApi delUser(String token, String id){
+    public ResponseApi delUser(JSONObject text){
         try {
+            String token = text.getString("token");
+            String id = text.getString("id");
+            if(!StringUtils.areNotEmpty(token, id)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id和认证不能为空");
+            }
+
             if (RedisUtils.isTokenNull(redisService,token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }

@@ -33,12 +33,7 @@ public class UserTixianController {
     @ApiOperation("提现状态")
     public ResponseApi drawingStatus(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-            if(!StringUtils.areNotEmpty(status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
-            }
-            return userTixianService.getDrawingStatus(token, status);
+            return userTixianService.getDrawingStatus(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -48,13 +43,8 @@ public class UserTixianController {
     @ApiOperation("提现操作")
     public ResponseApi drawingOperate(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-            String id = text.getString("id");
-            if(!StringUtils.areNotEmpty(id, status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
-            }
-            return userTixianService.operateDrawing(token, id, status);
+
+            return userTixianService.operateDrawing(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }

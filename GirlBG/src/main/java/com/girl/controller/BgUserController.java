@@ -32,12 +32,7 @@ public class BgUserController {
     @ApiOperation("登录")
     public ResponseLogin userLogin(@RequestBody JSONObject text) {
         try {
-            String username = text.getString("username");
-            String pwd = text.getString("password");
-            if(!StringUtils.areNotEmpty(username, pwd)){
-                return new ResponseLogin(401, "用户名密码不能为空",null,null);
-            }
-            return bgUserService.login(username, pwd);
+            return bgUserService.login(text);
         } catch (Exception e) {
             return new ResponseLogin(400, e.getMessage(), "", "");
         }
@@ -48,13 +43,7 @@ public class BgUserController {
     @ApiOperation("新增用户")
     public ResponseApi addUser(@RequestBody JSONObject text) {
         try {
-            String token = text.getString("token");
-            String name = text.getString("name");
-            String pwd = text.getString("pwd");
-            if(!StringUtils.areNotEmpty(name, pwd,token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "用户名、参数、认证不能为空");
-            }
-            return bgUserService.addUser(token, name, pwd);
+            return bgUserService.addUser(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -64,12 +53,7 @@ public class BgUserController {
     @ApiOperation("删除用户")
     public ResponseApi delUser(@RequestBody JSONObject text) {
         try {
-            String token = text.getString("token");
-            String id = text.getString("id");
-            if(!StringUtils.areNotEmpty(token, id)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id和认证不能为空");
-            }
-            return bgUserService.delUser(token, id);
+            return bgUserService.delUser(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }

@@ -3,6 +3,7 @@ package com.girl.core.mapper;
 import com.girl.Common.model.CertInfo;
 import com.girl.core.entity.UserCertInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 
 import java.util.List;
 
@@ -16,6 +17,6 @@ import java.util.List;
  */
 public interface UserCertInfoMapper extends BaseMapper<UserCertInfo> {
 
-    List<CertInfo> getCertInfo(Integer status);
+    List<CertInfo> getCertInfo(Pagination page,  Integer status);
 
 }

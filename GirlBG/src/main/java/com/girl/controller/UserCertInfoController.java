@@ -36,14 +36,8 @@ public class UserCertInfoController {
     @ApiOperation("状态")
     public ResponseApi certInfoStatus(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
 
-            if(!StringUtils.areNotEmpty(status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
-            }
-
-            return userCertInfoService.certInfoStatus(token, status);
+            return userCertInfoService.certInfoStatus(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -53,13 +47,8 @@ public class UserCertInfoController {
     @ApiOperation("操作")
     public ResponseApi operateCertInfo(@RequestBody JSONObject text) {
         try {
-            String id = text.getString("id");
-            String token = text.getString("token");
-            String status = text.getString("status");
-            if(!StringUtils.areNotEmpty(id, status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
-            }
-            return userCertInfoService.operateCertInfo(token, id, status);
+
+            return userCertInfoService.operateCertInfo(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }

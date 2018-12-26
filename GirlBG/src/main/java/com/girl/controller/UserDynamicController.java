@@ -30,14 +30,15 @@ public class UserDynamicController {
     @ApiOperation("状态")
     public ResponseApi dynamicStatus(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-//        String token = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", 0);
-
-            if(!StringUtils.areNotEmpty(status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
-            }
-            return userDynamicService.getDynamicData(token, status);
+//            String status = text.getString("status");
+//            String token = text.getString("token");
+////        String token = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", 0);
+//
+//            if(!StringUtils.areNotEmpty(status, token)){
+//                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
+//            }
+//            return userDynamicService.getDynamicData(token, status);
+            return userDynamicService.getDynamicData(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -47,13 +48,8 @@ public class UserDynamicController {
     @ApiOperation("操作")
     public ResponseApi dynamicOperation(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-            String id = text.getString("id");
-            if(!StringUtils.areNotEmpty(id, status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
-            }
-            return userDynamicService.operateDynamic(token, id, status);
+
+            return userDynamicService.operateDynamic(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }

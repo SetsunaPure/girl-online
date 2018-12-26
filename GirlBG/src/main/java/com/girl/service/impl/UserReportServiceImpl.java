@@ -1,5 +1,6 @@
 package com.girl.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.RedisUtils;
@@ -26,7 +27,9 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
     private RedisService redisService;
 
     @Override
-    public ResponseApi getUserManageStatus(String token, String status) {
+    public ResponseApi getUserManageStatus(JSONObject text) {
+
+        String token = text.getString("token");
 
         if (RedisUtils.isTokenNull(redisService,token)){
             return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
@@ -36,7 +39,9 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
     }
 
     @Override
-    public ResponseApi userManageOperate(String token, String id, String status) {
+    public ResponseApi userManageOperate(JSONObject text) {
+
+        String token = text.getString("token");
 
         if (RedisUtils.isTokenNull(redisService,token)){
             return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);

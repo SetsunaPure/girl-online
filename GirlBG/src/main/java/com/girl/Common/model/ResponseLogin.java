@@ -1,5 +1,7 @@
 package com.girl.Common.model;
 
+import com.girl.Common.enums.BgStatusEnum;
+
 public class ResponseLogin {
 
     private int code;
@@ -18,6 +20,17 @@ public class ResponseLogin {
         this.msg = msg;
         this.token = token;
         this.data = data;
+    }
+
+    public ResponseLogin(BgStatusEnum bgStatusEnum) {
+        this.code = bgStatusEnum.getCode();
+        this.msg = bgStatusEnum.getMessage();
+    }
+
+    public ResponseLogin(BgStatusEnum bgStatusEnum, String token) {
+        this.code = bgStatusEnum.getCode();
+        this.msg = bgStatusEnum.getMessage();
+        this.token = token;
     }
 
     public int getCode() {

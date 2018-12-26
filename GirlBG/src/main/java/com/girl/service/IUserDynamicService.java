@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserDynamic;
 import com.baomidou.mybatisplus.service.IService;
@@ -13,7 +14,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-12-13
  */
 public interface IUserDynamicService extends IService<UserDynamic> {
-    ResponseApi getDynamicData(String token, String status);
+    ResponseApi getDynamicData(JSONObject text);
 
-    ResponseApi operateDynamic(String token, String id, String status);
+    ResponseApi operateDynamic(JSONObject text);
 }

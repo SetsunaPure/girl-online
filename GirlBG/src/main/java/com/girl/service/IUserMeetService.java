@@ -1,5 +1,6 @@
 package com.girl.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.UserMeet;
 import com.baomidou.mybatisplus.service.IService;
@@ -14,7 +15,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IUserMeetService extends IService<UserMeet> {
 
-    ResponseApi getMeetInfo(String token, String status);
+    ResponseApi getMeetInfo(JSONObject text);
 
-    ResponseApi operateMeet(String token, String id, String status);
+    ResponseApi operateMeet(JSONObject text);
 }

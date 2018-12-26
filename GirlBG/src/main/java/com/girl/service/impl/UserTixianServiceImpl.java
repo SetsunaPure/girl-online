@@ -1,10 +1,13 @@
 package com.girl.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.DepositInfo;
 import com.girl.Common.model.ResponseApi;
 import com.girl.Common.utils.RedisUtils;
+import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserTixian;
 import com.girl.core.mapper.UserTixianMapper;
 import com.girl.service.IUserTixianService;
@@ -16,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.girl.Common.constants.Constant.DEFAULT_CURRENT;
+import static com.girl.Common.constants.Constant.DEFAULT_SIZE;
 import static com.girl.Common.enums.BgStatusEnum.RESPONSE_ERROR;
 import static com.girl.Common.enums.BgStatusEnum.RESPONSE_OK;
 
@@ -37,14 +42,25 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
     private RedisService redisService;
 
     @Override
-    public ResponseApi getDrawingStatus(String token, String status){
+    public ResponseApi getDrawingStatus(JSONObject text){
         try {
+            String status = text.getString("status");
+            String token = text.getString("token");
+            String current = text.getString("current");
+            String size = text.getString("size");
 
+            if(!StringUtils.areNotEmpty(status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
+            }
             if (RedisUtils.isTokenNull(redisService,token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
-            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(Integer.parseInt(status));
+            int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
+            int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+            Page page = new Page(lnCurrent, lnSize);
+
+            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(page, Integer.parseInt(status));
             return new ResponseApi(RESPONSE_OK, lstDepositInfo);
         }catch(Exception e){
             e.printStackTrace();
@@ -54,8 +70,14 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
     @Override
     @Transactional
-    public ResponseApi operateDrawing(String token, String id, String status){
+    public ResponseApi operateDrawing(JSONObject text){
         try {
+            String status = text.getString("status");
+            String token = text.getString("token");
+            String id = text.getString("id");
+            if(!StringUtils.areNotEmpty(id, status, token)){
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
+            }
 
             if (RedisUtils.isTokenNull(redisService,token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);

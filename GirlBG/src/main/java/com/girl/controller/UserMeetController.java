@@ -35,12 +35,7 @@ public class UserMeetController {
     public ResponseApi getMeetStatus(@RequestBody JSONObject text) {
 
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-            if(!StringUtils.areNotEmpty(status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
-            }
-            return userMeetService.getMeetInfo(token, status);
+            return userMeetService.getMeetInfo(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -50,13 +45,7 @@ public class UserMeetController {
     @ApiOperation("约会状态操作")
     public ResponseApi operateMeet(@RequestBody JSONObject text) {
         try {
-            String status = text.getString("status");
-            String token = text.getString("token");
-            String id = text.getString("id");
-            if(!StringUtils.areNotEmpty(id, status, token)){
-                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "流水id、状态码和认证不能为空");
-            }
-            return userMeetService.operateMeet(token, id, status);
+            return userMeetService.operateMeet(text);
         } catch (Exception e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
