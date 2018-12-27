@@ -23,6 +23,7 @@
 
     <select id="getDynamicInfo" parameterType="java.lang.Integer" resultType="com.girl.Common.model.DynamicInfo">
       SELECT
+        dynamic.id as id,
         dynamic.uid as userid,
         info.nick_name as nickname,
         dynamic.create_time as publishtime,

@@ -7,6 +7,7 @@ import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.CertInfo;
 import com.girl.Common.model.DynamicInfo;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserDynamic;
@@ -50,7 +51,6 @@ public class UserDynamicServiceImpl extends ServiceImpl<UserDynamicMapper, UserD
             String token = text.getString("token");
             String current = text.getString("current");
             String size = text.getString("size");
-//        String token = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", 0);
 
             if (!StringUtils.areNotEmpty(status, token)) {
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
@@ -62,11 +62,17 @@ public class UserDynamicServiceImpl extends ServiceImpl<UserDynamicMapper, UserD
 
             int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
             int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+            int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
-            List<DynamicInfo> lstDynamicInfo = userDynamicMapper.getDynamicInfo(page, Integer.parseInt(status));
+            List<DynamicInfo> lstDynamicInfo = userDynamicMapper.getDynamicInfo(page, lnStatus);
 
-            return new ResponseApi(RESPONSE_OK, lstDynamicInfo);
+            long dynamicCount = userDynamicMapper.selectCount(
+                    new EntityWrapper<UserDynamic>().eq("status", lnStatus));
+
+            ResponseData info = new ResponseData(dynamicCount, lstDynamicInfo);
+
+            return new ResponseApi(RESPONSE_OK, info);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseApi(RESPONSE_ERROR, e.getMessage());

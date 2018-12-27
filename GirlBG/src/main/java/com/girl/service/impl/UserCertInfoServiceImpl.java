@@ -7,6 +7,7 @@ import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.BgApiToken;
 import com.girl.Common.model.CertInfo;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserCertInfo;
@@ -60,11 +61,16 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
             int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
             int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+            int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
-            //默认选择第一页，50条记录
-            List<CertInfo> lstCertInfo = userCertInfoMapper.getCertInfo(new Page(1, 50), Integer.parseInt(status));
 
-            return new ResponseApi(BgStatusEnum.RESPONSE_OK, lstCertInfo);
+            //默认选择第一页，50条记录
+            List<CertInfo> lstCertInfo = userCertInfoMapper.getCertInfo(new Page(lnCurrent, lnSize), lnStatus);
+            long count = userCertInfoMapper.selectCount(new EntityWrapper<UserCertInfo>().eq("status", lnStatus));
+
+            ResponseData info = new ResponseData(count, lstCertInfo);
+
+            return new ResponseApi(BgStatusEnum.RESPONSE_OK, info);
         } catch (Exception e) {
             e.getMessage();
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "读取认证信息失败");

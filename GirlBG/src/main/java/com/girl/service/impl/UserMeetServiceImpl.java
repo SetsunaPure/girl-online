@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.MeetInfo;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserMeet;
@@ -58,10 +59,15 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
 
             int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
             int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+            int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
             List<MeetInfo> lstMeetInfo = userMeetMapper.getMeetInfo(page, Integer.parseInt(status));
-            return new ResponseApi(BgStatusEnum.RESPONSE_OK, lstMeetInfo);
+            long count = userMeetMapper.selectCount(new EntityWrapper<UserMeet>().eq("status", lnStatus));
+
+            ResponseData info = new ResponseData(count, lstMeetInfo);
+
+            return new ResponseApi(BgStatusEnum.RESPONSE_OK, info);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "读取约会信息失败");

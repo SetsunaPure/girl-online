@@ -4,6 +4,9 @@ import java.util.Date;
 
 public class DynamicInfo {
 
+    /**流水id**/
+    private Integer id;
+
     /**推送时间**/
     private Date publishtime;
 
@@ -35,6 +38,14 @@ public class DynamicInfo {
         this.word = word;
         this.photos = photos;
         this.video = video;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Date getPublishtime() {

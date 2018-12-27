@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.DepositInfo;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserTixian;
@@ -58,10 +59,14 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
             int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
             int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+            int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
-            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(page, Integer.parseInt(status));
-            return new ResponseApi(RESPONSE_OK, lstDepositInfo);
+            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(page, lnStatus);
+            long count = userTixianMapper.selectCount(new EntityWrapper<UserTixian>().eq("status", lnStatus));
+
+            ResponseData info = new ResponseData(count, lstDepositInfo);
+            return new ResponseApi(RESPONSE_OK, info);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseApi(RESPONSE_ERROR, e.getMessage());
