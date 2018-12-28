@@ -17,6 +17,11 @@ import java.util.List;
  */
 public interface UserDynamicMapper extends BaseMapper<UserDynamic> {
 
-    List<DynamicInfo> getDynamicInfo(Pagination page, @Param(value = "status") Integer status);
+    List<DynamicInfo> getDynamicInfo(Pagination page,
+                                     @Param(value = "status") Integer status,
+                                     @Param(value = "search") String search);
+
+    Long getDynamicCount(@Param(value = "status") Integer status,
+                            @Param(value = "search") String search);
 
 }

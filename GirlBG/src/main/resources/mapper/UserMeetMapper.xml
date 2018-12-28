@@ -40,9 +40,31 @@
         ON
             meet.uid = info.id
         WHERE
-            meet.status = 0
+            meet.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
         ORDER BY
             meet.meet_time
+    </select>
+
+
+    <select id="getMeetCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(*)
+        FROM
+        user_meet dynamic
+        LEFT JOIN
+        user_info info
+        ON
+        dynamic.uid = info.id
+        WHERE
+        dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
     </select>
 
 </mapper>

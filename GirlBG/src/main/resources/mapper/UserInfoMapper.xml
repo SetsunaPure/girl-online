@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.girl.core.mapper.UserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.girl.core.entity.UserInfo">
+        <id column="id" property="id" />
+        <result column="nick_name" property="nickName" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="address" property="address" />
+        <result column="emotion_status" property="emotionStatus" />
+        <result column="height" property="height" />
+        <result column="body_weight" property="bodyWeight" />
+        <result column="best_part" property="bestPart" />
+        <result column="wx_code" property="wxCode" />
+        <result column="qq_code" property="qqCode" />
+        <result column="label" property="label" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="avatar" property="avatar" />
+        <result column="certification" property="certification" />
+        <result column="perfect_userinfo" property="perfectUserinfo" />
+        <result column="job" property="job" />
+        <result column="dating_attitude" property="datingAttitude" />
+        <result column="vip" property="vip" />
+        <result column="create_time" property="createTime" />
+        <result column="last_login_time" property="lastLoginTime" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, nick_name AS nickName, sex, birthday, address, emotion_status AS emotionStatus, height, body_weight AS bodyWeight, best_part AS bestPart, wx_code AS wxCode, qq_code AS qqCode, label, phone_number AS phoneNumber, avatar, certification, perfect_userinfo AS perfectUserinfo, job, dating_attitude AS datingAttitude, vip, create_time AS createTime, last_login_time AS lastLoginTime, status
+    </sql>
+
+</mapper>

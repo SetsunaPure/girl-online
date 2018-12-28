@@ -51,6 +51,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
             String token = text.getString("token");
             String current = text.getString("current");
             String size = text.getString("size");
+            String search = text.getString("search");
 
             if (!StringUtils.areNotEmpty(status, token)) {
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
@@ -65,9 +66,9 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
             Page page = new Page(lnCurrent, lnSize);
 
             //默认选择第一页，50条记录
-            List<CertInfo> lstCertInfo = userCertInfoMapper.getCertInfo(new Page(lnCurrent, lnSize), lnStatus);
-            long count = userCertInfoMapper.selectCount(new EntityWrapper<UserCertInfo>().eq("status", lnStatus));
-
+            List<CertInfo> lstCertInfo = userCertInfoMapper.getCertInfo(page, lnStatus, search);
+//            long count = userCertInfoMapper.selectCount(new EntityWrapper<UserCertInfo>().eq("status", lnStatus));
+            long count = userCertInfoMapper.getCertCount(lnStatus, search);
             ResponseData info = new ResponseData(count, lstCertInfo);
 
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, info);

@@ -13,6 +13,11 @@ public class ReportDetail {
     private Date createTime;
 
     /**
+     * id
+     */
+    private String reportId;
+
+    /**
      * 举报人
      */
     private String reportName;
@@ -20,12 +25,7 @@ public class ReportDetail {
     /**
      * 举报原因
      */
-    private Integer type;
-
-    /**
-     * 举报次数
-     */
-    private Integer reportTimes;
+    private Integer reportType;
 
     public Date getCreateTime() {
         return createTime;
@@ -33,6 +33,14 @@ public class ReportDetail {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
     }
 
     public String getReportName() {
@@ -43,19 +51,11 @@ public class ReportDetail {
         this.reportName = reportName;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getReportType() {
+        return reportType;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getReportTimes() {
-        return reportTimes;
-    }
-
-    public void setReportTimes(Integer reportTimes) {
-        this.reportTimes = reportTimes;
+    public void setReportType(Integer reportType) {
+        this.reportType = reportType;
     }
 }

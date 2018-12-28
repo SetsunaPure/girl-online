@@ -48,6 +48,7 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
             String token = text.getString("token");
             String current = text.getString("current");
             String size = text.getString("size");
+            String search = text.getString("search");
 
             if(!StringUtils.areNotEmpty(status, token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
@@ -62,9 +63,9 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
             int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
-            List<MeetInfo> lstMeetInfo = userMeetMapper.getMeetInfo(page, Integer.parseInt(status));
-            long count = userMeetMapper.selectCount(new EntityWrapper<UserMeet>().eq("status", lnStatus));
-
+            List<MeetInfo> lstMeetInfo = userMeetMapper.getMeetInfo(page, lnStatus, search);
+//            long count = userMeetMapper.selectCount(new EntityWrapper<UserMeet>().eq("status", lnStatus));
+            long count = userMeetMapper.getMeetCount(lnStatus, search);
             ResponseData info = new ResponseData(count, lstMeetInfo);
 
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, info);
@@ -91,7 +92,8 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
 
             UserMeet userMeet = new UserMeet();
             userMeet.setStatus(Integer.parseInt(status));
-            Integer res = userMeetMapper.update(userMeet, new EntityWrapper<UserMeet>().eq("id={0}", id));
+            Integer res = userMeetMapper.update(userMeet,
+                    new EntityWrapper<UserMeet>().eq("id={0}", Integer.parseInt(id)));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         }catch (Exception e){
             e.printStackTrace();

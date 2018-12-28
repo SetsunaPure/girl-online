@@ -51,6 +51,7 @@ public class UserDynamicServiceImpl extends ServiceImpl<UserDynamicMapper, UserD
             String token = text.getString("token");
             String current = text.getString("current");
             String size = text.getString("size");
+            String search = text.getString("search");
 
             if (!StringUtils.areNotEmpty(status, token)) {
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
@@ -65,10 +66,11 @@ public class UserDynamicServiceImpl extends ServiceImpl<UserDynamicMapper, UserD
             int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
-            List<DynamicInfo> lstDynamicInfo = userDynamicMapper.getDynamicInfo(page, lnStatus);
+            List<DynamicInfo> lstDynamicInfo = userDynamicMapper.getDynamicInfo(page, lnStatus, search);
 
-            long dynamicCount = userDynamicMapper.selectCount(
-                    new EntityWrapper<UserDynamic>().eq("status", lnStatus));
+            long dynamicCount = userDynamicMapper.getDynamicCount(lnStatus, search);
+//            long dynamicCount = userDynamicMapper.selectCount(
+//                    new EntityWrapper<UserDynamic>().eq("status", lnStatus));
 
             ResponseData info = new ResponseData(dynamicCount, lstDynamicInfo);
 

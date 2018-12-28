@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.girl.Common.model.MeetInfo;
 import com.girl.core.entity.UserMeet;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,6 +18,11 @@ import java.util.List;
  */
 public interface UserMeetMapper extends BaseMapper<UserMeet> {
 
-    List<MeetInfo> getMeetInfo(Pagination page, Integer status);
+    List<MeetInfo> getMeetInfo(Pagination page,
+                               @Param(value = "status") Integer status,
+                               @Param(value = "search") String search);
+
+    long getMeetCount(@Param(value = "status") Integer status,
+                      @Param(value = "search") String search);
 
 }

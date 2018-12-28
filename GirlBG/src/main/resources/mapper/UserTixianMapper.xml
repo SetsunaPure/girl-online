@@ -22,7 +22,7 @@
         id, coin, money, status, uid, create_time AS createTime, oper_mark AS operMark, oper_id AS operId, operate_time AS operateTime, zhifubao, zhifubao_name AS zhifubaoName
     </sql>
 
-    <select id="getDrawingStatus" parameterType="java.lang.Integer" resultType="com.girl.Common.model.DepositInfo">
+    <select id="getDrawingStatus" resultType="com.girl.Common.model.DepositInfo">
         SELECT
           tixian.create_time as createtime,
           tixian.uid as userid,
@@ -40,6 +40,10 @@
           tixian.uid = info.id
         WHERE
           tixian.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
         ORDER BY
           tixian.uid
     </select>
@@ -57,6 +61,23 @@
         AND
             tixian.id = #{id}
     </update>
+
+    <select id="getTixianCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(*)
+        FROM
+        user_tixian dynamic
+        LEFT JOIN
+        user_info info
+        ON
+        dynamic.uid = info.id
+        WHERE
+        dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
+    </select>
 
 
 </mapper>

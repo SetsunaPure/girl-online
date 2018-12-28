@@ -49,6 +49,7 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
             String token = text.getString("token");
             String current = text.getString("current");
             String size = text.getString("size");
+            String search = text.getString("search");
 
             if(!StringUtils.areNotEmpty(status, token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "状态码和认证不能为空");
@@ -62,9 +63,9 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
             int lnStatus = Integer.parseInt(status);
             Page page = new Page(lnCurrent, lnSize);
 
-            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(page, lnStatus);
-            long count = userTixianMapper.selectCount(new EntityWrapper<UserTixian>().eq("status", lnStatus));
-
+            List<DepositInfo> lstDepositInfo = userTixianMapper.getDrawingStatus(page, lnStatus, search);
+//            long count = userTixianMapper.selectCount(new EntityWrapper<UserTixian>().eq("status", lnStatus));
+            long count = userTixianMapper.getTixianCount(lnStatus, search);
             ResponseData info = new ResponseData(count, lstDepositInfo);
             return new ResponseApi(RESPONSE_OK, info);
         }catch(Exception e){
@@ -90,13 +91,13 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
             //更改提现状态
             Integer tixianStatus = 1;
-            if (status.equals("3") ) {
+            if (status.equals("2") ) {
                 //提现条件不足
                 UserTixian userTixian = new UserTixian();
                 userTixian.setStatus(Integer.parseInt(status));
                 tixianStatus = userTixianMapper.update(userTixian,
                         new EntityWrapper<UserTixian>().where("id={0}", Integer.parseInt(id)));
-            }else if (status.equals("2")){
+            }else if (status.equals("1")){
                 //更改个人币数
                 tixianStatus = userTixianMapper.updateDrawingStatus(Integer.parseInt(id));
             }

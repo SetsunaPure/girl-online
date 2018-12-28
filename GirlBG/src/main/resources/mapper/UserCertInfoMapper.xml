@@ -30,7 +30,29 @@
         cert.uid = info.id
       WHERE
         cert.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
       ORDER BY
         cert.uid
+    </select>
+
+
+    <select id="getCertCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(*)
+        FROM
+        user_cert_info dynamic
+        LEFT JOIN
+        user_info info
+        ON
+        dynamic.uid = info.id
+        WHERE
+        dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
     </select>
 </mapper>

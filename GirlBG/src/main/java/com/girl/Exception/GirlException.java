@@ -10,6 +10,10 @@ public class GirlException extends Throwable {
         this.message = message;
     }
 
+    public GirlException(int code, String message){
+        this.code = code;
+        this.message = message;
+    }
     public int getCode() {
         return code;
     }

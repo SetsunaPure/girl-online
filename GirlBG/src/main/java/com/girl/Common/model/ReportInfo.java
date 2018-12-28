@@ -12,7 +12,7 @@ public class ReportInfo{
     /**
      * 被举报人
      */
-    private Long id;
+    private Integer id;
     /**
      * 被举报人姓名
      */
@@ -28,7 +28,7 @@ public class ReportInfo{
     /**
      * 举报次数
      */
-    private Integer reportTime;
+    private Integer reportTimes;
 
     public Integer getStatus() {
         return status;
@@ -38,11 +38,11 @@ public class ReportInfo{
         this.status = status;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -70,11 +70,11 @@ public class ReportInfo{
         this.createTime = createTime;
     }
 
-    public Integer getReportTime() {
-        return reportTime;
+    public Integer getReportTimes() {
+        return reportTimes;
     }
 
-    public void setReportTime(Integer reportTime) {
-        this.reportTime = reportTime;
+    public void setReportTimes(Integer reportTimes) {
+        this.reportTimes = reportTimes;
     }
 }
