@@ -59,4 +59,24 @@ public class BgUserController {
         }
     }
 
+    @PostMapping("/customerservice/list")
+    @ApiOperation("客服列表")
+    public ResponseApi getUsers(@RequestBody JSONObject text) {
+        try {
+            return bgUserService.getUsers(text);
+        } catch (Exception e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/customerservice/modifypassword")
+    @ApiOperation("客服列表")
+    public ResponseApi modifyPassword(@RequestBody JSONObject text) {
+        try {
+            return bgUserService.modifyPassword(text);
+        } catch (Exception e) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+        }
+    }
+
 }

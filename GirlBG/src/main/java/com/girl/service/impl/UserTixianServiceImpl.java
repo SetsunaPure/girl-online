@@ -91,16 +91,15 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
             //更改提现状态
             Integer tixianStatus = 1;
-            if (status.equals("2") ) {
-                //提现条件不足
-                UserTixian userTixian = new UserTixian();
-                userTixian.setStatus(Integer.parseInt(status));
-                tixianStatus = userTixianMapper.update(userTixian,
-                        new EntityWrapper<UserTixian>().where("id={0}", Integer.parseInt(id)));
-            }else if (status.equals("1")){
+            if (status.equals("1")){
                 //更改个人币数
                 tixianStatus = userTixianMapper.updateDrawingStatus(Integer.parseInt(id));
             }
+
+            UserTixian userTixian = new UserTixian();
+            userTixian.setStatus(Integer.parseInt(status));
+            tixianStatus = userTixianMapper.update(userTixian,
+                    new EntityWrapper<UserTixian>().where("id={0}", Integer.parseInt(id)));
 
             //todo:激光推送
             return new ResponseApi(RESPONSE_OK, tixianStatus);

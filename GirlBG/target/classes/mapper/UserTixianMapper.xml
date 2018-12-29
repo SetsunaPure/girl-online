@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.girl.core.mapper.UserTixianMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.girl.core.entity.UserTixian">
+        <id column="id" property="id" />
+        <result column="coin" property="coin" />
+        <result column="money" property="money" />
+        <result column="status" property="status" />
+        <result column="uid" property="uid" />
+        <result column="create_time" property="createTime" />
+        <result column="oper_mark" property="operMark" />
+        <result column="oper_id" property="operId" />
+        <result column="operate_time" property="operateTime" />
+        <result column="zhifubao" property="zhifubao" />
+        <result column="zhifubao_name" property="zhifubaoName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, coin, money, status, uid, create_time AS createTime, oper_mark AS operMark, oper_id AS operId, operate_time AS operateTime, zhifubao, zhifubao_name AS zhifubaoName
+    </sql>
+
+    <select id="getDrawingStatus" resultType="com.girl.Common.model.DepositInfo">
+        SELECT
+          tixian.create_time as createtime,
+          tixian.uid as userid,
+          info.nick_name as nickname,
+          tixian.zhifubao as account,
+		  tixian.zhifubao_name as accountname,
+		  tixian.coin as money,
+          tixian.id as id
+        FROM
+          user_tixian tixian
+        LEFT JOIN
+          user_info info
+        ON
+          tixian.uid = info.id
+        WHERE
+          tixian.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
+        ORDER BY
+          tixian.uid
+    </select>
+
+    <update id="updateDrawingStatus">
+        UPDATE
+            user_identity uidentity,
+            user_tixian tixian
+        SET
+            uidentity.coin = uidentity.coin - tixian.coin
+        AND
+            tixian.`status` = 2
+        WHERE
+            uidentity.uid = tixian.uid
+        AND
+            tixian.id = #{id}
+    </update>
+
+    <select id="getTixianCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(*)
+        FROM
+        user_tixian dynamic
+        LEFT JOIN
+        user_info info
+        ON
+        dynamic.uid = info.id
+        WHERE
+        dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
+    </select>
+
+
+</mapper>

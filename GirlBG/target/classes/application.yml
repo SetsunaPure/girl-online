@@ -1,0 +1,140 @@
+server:
+  port: 8080
+
+#日志记录
+logging:
+  config: classpath:log4j2/log4j2.xml
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: 2048MB
+      maxRequestSize: 2048MB
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.105.130.223:3306/goddess_online?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
+    username: root
+    password: Wp@949094114
+    initialSize: 20
+    minIdle: 20
+    maxActive: 100
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+  aop:
+  proxy-target-class: true
+  http:
+  multipart:
+    max-file-size: 10MB
+    max-request-size: 10MB
+  devtools:
+  restart:
+    enabled: true
+
+  redis:
+    database: 1
+    timeout: 5000
+    # Redis服务器地址
+#    host: 47.105.130.223
+    host: 127.0.0.1
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    # 连接池最大连接数（使用负值表示没有限制）
+    password:
+
+#    pool:
+#      max-active: 8
+#      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+#      max-wait: -1
+#      # 连接池中的最大空闲连接
+#      max-idle: 8
+#      # 连接池中的最小空闲连接
+#      min-idle: 0
+
+#MyBatis
+mybatis-plus:
+  mapper-locations: classpath:/mapper/BgUserMapper.xml,
+                     classpath:/mapper/UserDynamicMapper.xml,
+                     classpath:/mapper/UserTixianMapper.xml,
+                     classpath:/mapper/UserMeetMapper.xml,
+                     classpath:/mapper/UserCertInfoMapper.xml,
+                     classpath:/mapper/UserReportMapper.xml,
+                     classpath:/mapper/BgTokenMapper.xml,
+                     classpath:/mapper/BgVersionMapper.xml
+  #实体扫描，多个package用逗号或者分号分隔i
+  typeAliasesPackage: com.girl.core.entity.BgUser,
+                        com.girl.core.entity.UserDynamic,
+                        com.girl.core.entity.UserTixian,
+                        com.girl.core.entity.UserMeet,
+                        com.girl.core.entity.UserIdentity,
+                        com.girl.core.entity.UserCertInfo,
+                        com.girl.core.entity.PubConfig,
+                        com.girl.core.entity.UserReport,
+                        com.girl.core.entity.BgToken，
+                        com.girl.core.entity.BgVersion
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 2
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    #序列接口实现类配置
+    #key-generator: com.baomidou.springboot.xxx
+    #逻辑删除配置
+    #logic-delete-value: 0
+    #logic-not-delete-value: 1
+    #自定义填充策略接口实现
+    #meta-object-handler: MyMetaObjectHandler
+    #自定义SQL注入器
+    #sql-injector: com.baomidou.springboot.xxx
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false
+  health:
+    status:
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP
+
+# 必须配置
+feign:
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 1000 ##并发执行的最大线程数，默认10
+      maxQueueSize: 1000 ##BlockingQueue的最大队列数
+      queueSizeRejectionThreshold: 500 ##即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 110000
+

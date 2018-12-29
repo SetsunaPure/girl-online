@@ -13,6 +13,8 @@ public class CertInfo {
 
     private String video;
 
+    private String createTime;
+
     public int getId() {
         return id;
     }
@@ -43,5 +45,13 @@ public class CertInfo {
 
     public void setVideo(String video) {
         this.video = video;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

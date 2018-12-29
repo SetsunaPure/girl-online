@@ -10,6 +10,7 @@ import com.girl.Common.model.ResponseApi;
 import com.girl.Common.model.ResponseLogin;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Exception.GirlException;
 import com.girl.core.entity.BgToken;
 import com.girl.core.entity.BgUser;
 import com.girl.core.mapper.BgTokenMapper;
@@ -24,6 +25,7 @@ import com.girl.Common.utils.UUIDUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -43,6 +45,9 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
 
     @Autowired
     BgTokenMapper tokenMapper;
+
+    @Autowired
+    BgUserMapper userMapper;
 
     @Override
     @Transactional
@@ -104,15 +109,17 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
+
             BgUser bu = new BgUser();
             bu.setName(name);
+
+            if(bg.selectOne(bu) != null){
+                new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
+            }
             bu.setPwd(pwd);
             bu.setIsAdmin(0);
             Integer res = bg.insert(bu);
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
-        }catch (DuplicateKeyException e){
-            e.printStackTrace();
-            return new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "新增客服失败");
@@ -137,6 +144,57 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "删除客服失败");
+        }
+    }
+
+    public ResponseApi getUsers(JSONObject text){
+        try {
+            String token = text.getString("token");
+            if (StringUtils.isEmpty(token)) {
+                return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "认证不能为空");
+            }
+
+            if (RedisUtils.isTokenNull(redisService, token)) {
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
+
+            List<BgUser> users = userMapper.selectList(new EntityWrapper<BgUser>());
+            return new ResponseApi(BgStatusEnum.RESPONSE_OK, users);
+        }catch (Exception e){
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "读取客服列表失败");
+        }
+
+    }
+
+    public ResponseApi modifyPassword(JSONObject text){
+        String token = text.getString("token");
+
+        if (StringUtils.isEmpty(token)) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "认证不能为空");
+        }
+
+        if (RedisUtils.isTokenNull(redisService, token)) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+        }
+
+        BgToken bgToken = (BgToken)redisService.get(token);
+
+        try {
+            deletUserRecord(token, bgToken);
+        } catch (GirlException e) {
+            return new ResponseApi(e.getCode(),null, e.getMessage());
+        }
+
+        return new ResponseApi(BgStatusEnum.RESPONSE_OK);
+    }
+
+    @Transactional
+    private void deletUserRecord(String token, BgToken bgToken) throws GirlException {
+        try {
+            userMapper.delete(new EntityWrapper<BgUser>().eq("user_id", bgToken.getLoginId()));
+            tokenMapper.delete(new EntityWrapper<BgToken>().eq("token", token));
+        }catch (Exception e){
+            throw new GirlException(400, "删除客服失败");
         }
     }
 

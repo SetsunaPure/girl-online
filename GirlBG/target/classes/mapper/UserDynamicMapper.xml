@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.girl.core.mapper.UserDynamicMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.girl.core.entity.UserDynamic">
+        <id column="id" property="id" />
+        <result column="uid" property="uid" />
+        <result column="content" property="content" />
+        <result column="images" property="images" />
+        <result column="video" property="video" />
+        <result column="create_time" property="createTime" />
+        <result column="location_name" property="locationName" />
+        <result column="location_longitude" property="locationLongitude" />
+        <result column="location_latitude" property="locationLatitude" />
+        <result column="type" property="type" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, uid, content, images, video, create_time AS createTime, location_name AS locationName, location_longitude AS locationLongitude, location_latitude AS locationLatitude, type
+    </sql>
+
+    <select id="getDynamicInfo" resultType="com.girl.Common.model.DynamicInfo">
+      SELECT
+        dynamic.id as id,
+        dynamic.uid as userid,
+        info.nick_name as nickname,
+        dynamic.create_time as publishtime,
+        dynamic.images as photos,
+        dynamic.content as word,
+        dynamic.video as video
+      FROM
+	    user_dynamic dynamic
+      LEFT JOIN
+	    user_info info
+      ON
+	    dynamic.uid = info.id
+      WHERE
+	    dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
+      ORDER BY
+	    dynamic.uid
+    </select>
+
+    <select id="getDynamicCount" resultType="java.lang.Long">
+        SELECT
+          COUNT(*)
+        FROM
+          user_dynamic dynamic
+        LEFT JOIN
+	      user_info info
+	    ON
+	      dynamic.uid = info.id
+	    WHERE
+	      dynamic.status = #{status}
+        <if test="search != null and search != ''">
+            AND
+            info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+        </if>
+    </select>
+
+</mapper>
