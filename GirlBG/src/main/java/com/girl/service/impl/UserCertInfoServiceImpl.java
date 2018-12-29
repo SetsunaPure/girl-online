@@ -98,7 +98,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
             UserCertInfo uci = new UserCertInfo();
             uci.setStatus(Integer.parseInt(status));
-            Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id={0}", id));
+            Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", id));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         } catch (Exception e) {
             e.getMessage();

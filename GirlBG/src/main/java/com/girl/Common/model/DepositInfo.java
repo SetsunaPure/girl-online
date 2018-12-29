@@ -13,8 +13,15 @@ public class DepositInfo {
     private String account;
     private String accountname;
     private String money;
-    private String applicationid;
-    private Integer checkstatus;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Date getCreatetime() {
         return createtime;
@@ -62,21 +69,5 @@ public class DepositInfo {
 
     public void setMoney(String money) {
         this.money = money;
-    }
-
-    public String getApplicationid() {
-        return applicationid;
-    }
-
-    public void setApplicationid(String applicationid) {
-        this.applicationid = applicationid;
-    }
-
-    public Integer getCheckstatus() {
-        return checkstatus;
-    }
-
-    public void setCheckstatus(Integer checkstatus) {
-        this.checkstatus = checkstatus;
     }
 }

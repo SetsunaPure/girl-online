@@ -6,6 +6,10 @@ logging:
   config: classpath:log4j2/log4j2.xml
 
 spring:
+  servlet:
+    multipart:
+      maxFileSize: 2048MB
+      maxRequestSize: 2048MB
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
@@ -66,7 +70,8 @@ mybatis-plus:
                      classpath:/mapper/UserMeetMapper.xml,
                      classpath:/mapper/UserCertInfoMapper.xml,
                      classpath:/mapper/UserReportMapper.xml,
-                     classpath:/mapper/BgTokenMapper.xml
+                     classpath:/mapper/BgTokenMapper.xml,
+                     classpath:/mapper/BgVersionMapper.xml
   #实体扫描，多个package用逗号或者分号分隔i
   typeAliasesPackage: com.girl.core.entity.BgUser,
                         com.girl.core.entity.UserDynamic,
@@ -76,7 +81,8 @@ mybatis-plus:
                         com.girl.core.entity.UserCertInfo,
                         com.girl.core.entity.PubConfig,
                         com.girl.core.entity.UserReport,
-                        com.girl.core.entity.BgToken
+                        com.girl.core.entity.BgToken，
+                        com.girl.core.entity.BgVersion
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 2

@@ -141,7 +141,7 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
         userInfo.setStatus(lnStatus);
 
         try {
-            updateUserRecord(uid, userInfo);
+            updateUserRecord(uid, userReport, userInfo, lnStatus);
         } catch (GirlException e) {
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
         }
@@ -150,10 +150,16 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
     }
 
     @Transactional
-    private void updateUserRecord(Integer uid, UserInfo userInfo) throws GirlException {
+    private void updateUserRecord(Integer uid, UserReport userReport, UserInfo userInfo, Integer status) throws GirlException {
         try {
+            if (status == 0){
+                //解冻
+                userReportMapper.delete(new EntityWrapper<UserReport>().eq("uid", uid));
+            }else {
+                //冻结
+                userReportMapper.update(userReport, new EntityWrapper<UserReport>().eq("uid", uid));
+            }
             userInfoMapper.update(userInfo, new EntityWrapper<UserInfo>().eq("id", uid));
-            userReportMapper.delete(new EntityWrapper<UserReport>().eq("uid", uid));
         }catch (Exception e){
             e.printStackTrace();
             throw new GirlException(400,"更新用户管理状态失败");

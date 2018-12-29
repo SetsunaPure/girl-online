@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
 import com.girl.core.entity.BgVersion;
 import com.baomidou.mybatisplus.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -16,5 +17,8 @@ import com.baomidou.mybatisplus.service.IService;
 public interface IBgVersionService extends IService<BgVersion> {
 
     JSONObject getLatestVersion(int client);
+
+    ResponseApi uploadVersions(MultipartFile file, String token, String info,
+                              String versionCode, String versionName, Integer updateType);
 
 }

@@ -30,8 +30,7 @@
           tixian.zhifubao as account,
 		  tixian.zhifubao_name as accountname,
 		  tixian.coin as money,
-          tixian.id as applicationid,
-          tixian.status as checkstatus
+          tixian.id as id
         FROM
           user_tixian tixian
         LEFT JOIN
