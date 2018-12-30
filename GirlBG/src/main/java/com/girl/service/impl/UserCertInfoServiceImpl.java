@@ -11,7 +11,9 @@ import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.core.entity.UserCertInfo;
+import com.girl.core.entity.UserInfo;
 import com.girl.core.mapper.UserCertInfoMapper;
+import com.girl.core.mapper.UserInfoMapper;
 import com.girl.service.IUserCertInfoService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.girl.service.RedisService;
@@ -38,6 +40,9 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
     @Autowired
     UserCertInfoMapper userCertInfoMapper;
+
+    @Autowired
+    UserInfoMapper userInfoMapper;
 
     @Autowired
     private RedisService redisService;
@@ -96,9 +101,15 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
+            Integer lnid = Integer.parseInt(id);
+            Integer lnStatus = Integer.parseInt(status);
+
             UserCertInfo uci = new UserCertInfo();
             uci.setStatus(Integer.parseInt(status));
-            Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", id));
+
+            Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", lnid));
+            userCertInfoMapper.updateInfoCert(lnid, lnStatus);
+
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         } catch (Exception e) {
             e.getMessage();

@@ -114,7 +114,7 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
             bu.setName(name);
 
             if(bg.selectOne(bu) != null){
-                new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
+                return new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
             }
             bu.setPwd(pwd);
             bu.setIsAdmin(0);
@@ -139,7 +139,7 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
-            Integer res = bg.delete(new EntityWrapper<BgUser>().eq("user_id={0}", id));
+            Integer res = bg.delete(new EntityWrapper<BgUser>().eq("user_id", id));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         }catch (Exception e){
             e.printStackTrace();

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author wangpei
@@ -23,6 +23,9 @@ public interface UserCertInfoMapper extends BaseMapper<UserCertInfo> {
                                @Param(value = "search") String search);
 
     long getCertCount(@Param(value = "status") Integer status,
-                         @Param(value = "search") String search);
+                      @Param(value = "search") String search);
+
+    void updateInfoCert(@Param(value = "id") Integer id,
+                        @Param(value = "status") Integer status);
 
 }

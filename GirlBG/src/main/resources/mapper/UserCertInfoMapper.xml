@@ -56,4 +56,17 @@
             info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
         </if>
     </select>
+
+    <update id="updateInfoCert">
+    UPDATE
+    user_info info,
+    user_cert_info cert
+    SET
+    info.certification = #{status}
+    WHERE
+    info.id = cert.uid
+    AND
+    cert.id = #{id}
+    </update>
+
 </mapper>
