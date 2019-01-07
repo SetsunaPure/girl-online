@@ -4,14 +4,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Common.model.ResponseData;
 import com.girl.Common.model.VersionInfo;
+import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.Common.utils.UploadFileToQiNiu;
 import com.girl.core.entity.BgVersion;
 import com.girl.core.mapper.BgVersionMapper;
 import com.girl.service.IBgVersionService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.girl.service.RedisService;
 import com.qiniu.common.QiniuException;
+import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static com.girl.Common.constants.Constant.DEFAULT_CURRENT;
+import static com.girl.Common.constants.Constant.DEFAULT_SIZE;
 
 /**
  * <p>
@@ -36,6 +44,9 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
 
     @Autowired
     private BgVersionMapper bgVersionMapper;
+
+    @Autowired
+    private RedisService redisService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -67,6 +78,9 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
                                      String versionCode, String versionName, Integer updateType) {
 
         try {
+            if (RedisUtils.isTokenNull(redisService, token)) {
+                return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+            }
             String apkUrl = getFileUrl(file);
             BgVersion bgVersion = new BgVersion();
             bgVersion.setCreateTime(new Date());
@@ -84,6 +98,28 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "版本信息存库失败" + e.getMessage());
         }
         return new ResponseApi(BgStatusEnum.RESPONSE_OK);
+    }
+
+    public ResponseApi versionList(JSONObject text){
+        String token = text.getString("token");
+        String current = text.getString("current");
+        String size = text.getString("size");
+
+
+        if (RedisUtils.isTokenNull(redisService, token)) {
+            return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
+        }
+
+        int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
+        int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
+
+        long count = bgVersionMapper.selectCount(new EntityWrapper<BgVersion>());
+
+        List<BgVersion> lstBg = bgVersionMapper.selectPage(new RowBounds(lnCurrent,lnSize),new EntityWrapper<BgVersion>());
+
+        ResponseData info = new ResponseData(count, lstBg);
+
+        return new ResponseApi(BgStatusEnum.RESPONSE_OK, info);
     }
 
     private String getFileUrl(MultipartFile file){

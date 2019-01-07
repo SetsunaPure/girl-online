@@ -21,4 +21,6 @@ public interface IBgVersionService extends IService<BgVersion> {
     ResponseApi uploadVersions(MultipartFile file, String token, String info,
                               String versionCode, String versionName, Integer updateType);
 
+    ResponseApi versionList(JSONObject text);
+
 }

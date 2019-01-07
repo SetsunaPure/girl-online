@@ -46,6 +46,12 @@ public class BgVersionController {
         return bgVersionService.uploadVersions(file, token, info, versionCode, versionName, updateType);
     }
 
+    @PostMapping("/list")
+    @ApiOperation("版本列表")
+    public ResponseApi versionList(@RequestBody JSONObject text){
+        return bgVersionService.versionList(text);
+    }
+
 
 }
 
