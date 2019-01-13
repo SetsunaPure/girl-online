@@ -3,6 +3,7 @@ package com.girl.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.girl.Common.constants.Constant;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.BgApiToken;
 import com.girl.Common.model.CertInfo;
@@ -10,6 +11,7 @@ import com.girl.Common.model.ResponseApi;
 import com.girl.Common.model.ResponseData;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Common.utils.UploadFileToQiNiu;
 import com.girl.core.entity.UserCertInfo;
 import com.girl.core.entity.UserInfo;
 import com.girl.core.mapper.UserCertInfoMapper;
@@ -17,11 +19,17 @@ import com.girl.core.mapper.UserInfoMapper;
 import com.girl.service.IUserCertInfoService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.girl.service.RedisService;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 
+import java.io.File;
 import java.util.List;
 
 import static com.girl.Common.constants.Constant.DEFAULT_CURRENT;
@@ -110,6 +118,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
             Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", lnid));
             userCertInfoMapper.updateInfoCert(lnid, lnStatus);
 
+
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         } catch (Exception e) {
             e.getMessage();
@@ -117,4 +126,17 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
         }
     }
 
+    public static void main(String[] args) throws QiniuException {
+        File temFile = new File("F:\\1316.apk");
+        Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
+         Configuration cfg = new Configuration(Zone.zone2());
+        UploadManager uploadManager = new UploadManager(cfg);
+        String token = auth.uploadToken("images");
+        uploadManager.put(temFile, "20190113/test.apk", token);
+//        UploadFileToQiNiu.uploadByFile( temFile, "images2", "20190113/test.jpg");
+
+    }
 }
+
+
+
