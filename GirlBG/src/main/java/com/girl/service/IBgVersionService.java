@@ -2,6 +2,7 @@ package com.girl.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Exception.GirlException;
 import com.girl.core.entity.BgVersion;
 import com.baomidou.mybatisplus.service.IService;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ public interface IBgVersionService extends IService<BgVersion> {
     JSONObject getLatestVersion(int client);
 
     ResponseApi uploadVersions(MultipartFile file, String token, String info,
-                              String versionCode, String versionName, Integer updateType);
+                              String versionCode, String versionName, Integer updateType) throws GirlException;
 
     ResponseApi versionList(JSONObject text);
 

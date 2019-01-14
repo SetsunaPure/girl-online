@@ -3,6 +3,7 @@ package com.girl.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.girl.Common.model.ResponseApi;
+import com.girl.Exception.GirlException;
 import com.girl.service.IBgVersionService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -40,7 +41,7 @@ public class BgVersionController {
                                       @RequestParam("info") String info,
                                       @RequestParam("version_code") String versionCode,
                                       @RequestParam("version_name") String versionName,
-                                      @RequestParam("update_type") Integer updateType)
+                                      @RequestParam("update_type") Integer updateType) throws GirlException
 
     {
         return bgVersionService.uploadVersions(file, token, info, versionCode, versionName, updateType);

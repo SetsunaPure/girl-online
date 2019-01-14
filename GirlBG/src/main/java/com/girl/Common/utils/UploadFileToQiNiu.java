@@ -16,7 +16,7 @@ import java.util.Random;
 public class UploadFileToQiNiu {
 
 
-    private final static Configuration cfg = new Configuration(Zone.zone0());
+    private final static Configuration cfg = new Configuration(Zone.zone2());
 
     public static void uploadByFile(File temFile, String bucketname, String path) throws QiniuException {
         Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
@@ -41,8 +41,8 @@ public class UploadFileToQiNiu {
      * @param path
      * @throws QiniuException
      */
-    public static void uploadByInputStream(InputStream inputStream, String bucketname, String path) throws QiniuException {
-        Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
+    public static void uploadByInputStream(String accesskey, String secretKey, InputStream inputStream, String bucketname, String path) throws QiniuException {
+        Auth auth = Auth.create(accesskey, secretKey);
 
         UploadManager uploadManager = new UploadManager(cfg);
         String token = getUpToken(bucketname, auth);
