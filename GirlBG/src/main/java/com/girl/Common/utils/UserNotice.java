@@ -20,8 +20,7 @@ public class UserNotice {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void sendMessage(UserMsg userMsg, UserIcon userIcon, Map<String, String> extend) {
-        String title = "系统通知";
+    public void sendMessage(UserMsg userMsg, UserIcon userIcon, Map<String, String> extend, String title) {
         userMsg.setType(30);
 
         try {
