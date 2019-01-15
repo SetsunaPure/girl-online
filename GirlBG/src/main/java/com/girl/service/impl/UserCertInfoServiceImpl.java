@@ -141,9 +141,9 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
         //推送消息给用户
         if(lnStatus == 1){
-            userMsg.setMsg("恭喜！您的消息认证审核成功");
+            userMsg.setMsg("您提交的认证审核通过");
         } else if(lnStatus == 2){
-            userMsg.setMsg("对不起！您的消息认证审核失败，请重新认证");
+            userMsg.setMsg("您提交的认证审核未通过");
         }
 
         logger.info(userMsg.getMsg());
@@ -167,7 +167,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
     private void pushCertMessage( UserMsg userMsg, UserIcon userIcon, Map<String, String> extend) {
         UserNotice userNotice = new UserNotice();
-        userNotice.sendMessage(userMsg, userIcon, extend);
+        userNotice.sendMessage(userMsg, userIcon, extend, "认证通知");
     }
 
     public static void main(String[] args) throws QiniuException {
