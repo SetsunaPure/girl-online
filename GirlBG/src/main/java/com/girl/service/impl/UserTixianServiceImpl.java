@@ -10,6 +10,7 @@ import com.girl.Common.model.ResponseData;
 import com.girl.Common.model.UserIcon;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
+import com.girl.Common.utils.UserNotice;
 import com.girl.core.entity.UserInfo;
 import com.girl.core.entity.UserMsg;
 import com.girl.core.entity.UserTixian;
@@ -126,8 +127,8 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
         }
     }
 
-    private void pushTixianMessages(String id, Integer lnStatus, UserTixian uci) {
-        UserTixian userTixian = userTixianMapper.selectOne(uci);
+    private void pushTixianMessages(String id, Integer lnStatus, UserTixian ut) {
+        UserTixian userTixian = userTixianMapper.selectOne(ut);
 
         UserMsg userMsg = new UserMsg();
         userMsg.setSubType(30);
@@ -135,11 +136,12 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
         userMsg.setUid(userTixian.getUid());
         userMsg.setCreateTime(new Date());
 
+        String money = ut.getMoney().toString();
         //推送消息给用户
         if (lnStatus == 1) {
-            userMsg.setMsg("恭喜！提现成功");
+            userMsg.setMsg("您申请的提现￥" + money + "成功");
         } else if (lnStatus == 2) {
-            userMsg.setMsg("对不起！提现失败");
+            userMsg.setMsg("您申请的提现￥" + money + "失败");
         }
 
         logger.info(userMsg.getMsg());
@@ -156,6 +158,10 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
         Map<String, String> extend = new HashMap();
         extend.put("tixianId", userInfo.getId().toString());
+
+        //激光推送提现消息
+        UserNotice userNotice = new UserNotice();
+        userNotice.sendMessage(userMsg, userIcon, extend, "提现通知");
     }
 
 }
