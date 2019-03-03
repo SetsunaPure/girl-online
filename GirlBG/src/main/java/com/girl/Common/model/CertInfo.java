@@ -11,6 +11,8 @@ public class CertInfo {
 
     private String nickname;
 
+    private String images;
+
     private String video;
 
     private String createTime;
@@ -37,6 +39,14 @@ public class CertInfo {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 
     public String getVideo() {

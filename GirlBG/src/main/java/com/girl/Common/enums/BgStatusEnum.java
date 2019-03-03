@@ -10,7 +10,8 @@ public enum BgStatusEnum {
     RESPONSE_USER_NOT_EXIST(405, "用户名不存在"),
     RESPONSE_PASSWORD_ERROR(406, "密码错误"),
     RESPONSE_IS_LOGIN(407, "已经登录"),
-    RESPONSE_TIME_OUT(408, "登录超时");
+    RESPONSE_TIME_OUT(408, "登录超时"),
+    RESPONSE_COUNNT_ESIST(409, "账户已存在");
 
     private int code;
     private String message;

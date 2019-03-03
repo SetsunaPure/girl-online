@@ -30,11 +30,11 @@ public class BgUserController {
     @PostMapping("/userLogin")
     @ResponseBody
     @ApiOperation("登录")
-    public ResponseLogin userLogin(@RequestBody JSONObject text) {
+    public ResponseApi userLogin(@RequestBody JSONObject text) {
         try {
             return bgUserService.login(text);
         } catch (Exception e) {
-            return new ResponseLogin(400, e.getMessage(), "", "");
+            return new ResponseApi(400, e.getMessage(), "");
         }
 
     }

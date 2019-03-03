@@ -16,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author wangpei
- * @since 2018-12-28
+ * @since 2019-02-28
  */
 @TableName("bg_version")
 public class BgVersion extends Model<BgVersion> {
@@ -53,6 +53,11 @@ public class BgVersion extends Model<BgVersion> {
      */
     @TableField("create_time")
     private Date createTime;
+    /**
+     * 手机类型（0代表安卓，1代表苹果）
+     */
+    @TableField("phone_type")
+    private Integer phoneType;
 
 
     public Integer getId() {
@@ -111,6 +116,14 @@ public class BgVersion extends Model<BgVersion> {
         this.createTime = createTime;
     }
 
+    public Integer getPhoneType() {
+        return phoneType;
+    }
+
+    public void setPhoneType(Integer phoneType) {
+        this.phoneType = phoneType;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -126,6 +139,7 @@ public class BgVersion extends Model<BgVersion> {
         ", versionCode=" + versionCode +
         ", updateType=" + updateType +
         ", createTime=" + createTime +
+        ", phoneType=" + phoneType +
         "}";
     }
 }

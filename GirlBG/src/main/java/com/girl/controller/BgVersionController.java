@@ -36,15 +36,16 @@ public class BgVersionController {
 
     @PostMapping("/upload")
     @ApiOperation("上传版本")
-    public ResponseApi uploadVersions(@RequestParam("file") MultipartFile file,
-                                      @RequestParam("token") String token,
-                                      @RequestParam("info") String info,
-                                      @RequestParam("version_code") String versionCode,
-                                      @RequestParam("version_name") String versionName,
-                                      @RequestParam("update_type") Integer updateType) throws GirlException
+    public ResponseApi uploadVersions(@RequestParam(value ="file", required = false) MultipartFile file,
+                                      @RequestParam(value ="token", required = false) String token,
+                                      @RequestParam(value = "info", required = false) String info,
+                                      @RequestParam(value = "version_code", required = false) String versionCode,
+                                      @RequestParam(value = "version_name", required = false) String versionName,
+                                      @RequestParam(value = "update_type", required = false) Integer updateType,
+                                      @RequestParam(value = "phone_type", required = false) Integer phoneType) throws GirlException
 
     {
-        return bgVersionService.uploadVersions(file, token, info, versionCode, versionName, updateType);
+        return bgVersionService.uploadVersions(file, token, info, versionCode, versionName, updateType, phoneType);
     }
 
     @PostMapping("/list")

@@ -30,14 +30,23 @@ public class UserNotice {
             Map<String, String> param = new HashMap<>();
 
             userMsgMapper.insert(userMsg);
-            param.put("id", userMsg.getId().toString());
+
+//            UserMsg userMsg1 = new UserMsg();
+//            userMsg1.setCreateTime(userMsg.getCreateTime());
+//            userMsg1.setUid(userMsg.getUid());
+            logger.info("查询推送消息前：", JSON.toJSON(userMsg));
+            UserMsg userMsg2 = userMsgMapper.selectOne(userMsg);
+            logger.info("查询推送消息后：", JSON.toJSON(userMsg2));
+            param.put("id", userMsg2.getId().toString());
             param.put("userIcon", JSONObject.toJSONString(userIcon));
             param.put("extend", JSONObject.toJSONString(extend));
-            param.put("time", String.valueOf(userMsg.getCreateTime().getTime()));
-            param.put("type", userMsg.getType().toString());
-            param.put("subType", userMsg.getSubType().toString());
-            Jiguang.alert(userMsg.getMsg(), title, param, userMsg.getUid().toString());
-            userMsg.setParam(JSON.toJSONString(param));
+            param.put("time", String.valueOf(userMsg2.getCreateTime().getTime()));
+            param.put("type", userMsg2.getType().toString());
+            param.put("subType", userMsg2.getSubType().toString());
+
+            Jiguang.alert(userMsg.getMsg(), title, param, userMsg2.getUid().toString());
+
+            userMsg2.setParam(JSON.toJSONString(param));
         } catch (Exception e) {
             logger.error("推送失败", e);
         }

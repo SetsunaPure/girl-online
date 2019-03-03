@@ -83,6 +83,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
             //默认选择第一页，50条记录
             List<CertInfo> lstCertInfo = userCertInfoMapper.getCertInfo(page, lnStatus, search);
+
 //            long count = userCertInfoMapper.selectCount(new EntityWrapper<UserCertInfo>().eq("status", lnStatus));
             long count = userCertInfoMapper.getCertCount(lnStatus, search);
             ResponseData info = new ResponseData(count, lstCertInfo);
@@ -119,10 +120,12 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
             Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", lnid));
             userCertInfoMapper.updateInfoCert(lnid, lnStatus);
-
-            //推送认证消息
-            pushCertMessages(id, lnStatus, uci);
-
+            try {
+                //推送认证消息
+                pushCertMessages(id, lnStatus, uci);
+            }catch (Exception e){
+                logger.error("推送认证消息给客户端失败");
+            }
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         } catch (Exception e) {
             e.getMessage();

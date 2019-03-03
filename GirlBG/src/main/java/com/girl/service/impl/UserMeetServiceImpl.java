@@ -57,7 +57,6 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
-
             int lnCurrent = current == null ? DEFAULT_CURRENT : Integer.parseInt(current);
             int lnSize = size == null ? DEFAULT_SIZE : Integer.parseInt(size);
             int lnStatus = Integer.parseInt(status);
@@ -93,7 +92,7 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
             UserMeet userMeet = new UserMeet();
             userMeet.setStatus(Integer.parseInt(status));
             Integer res = userMeetMapper.update(userMeet,
-                    new EntityWrapper<UserMeet>().eq("id={0}", Integer.parseInt(id)));
+                    new EntityWrapper<UserMeet>().eq("id", Integer.parseInt(id)));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         }catch (Exception e){
             e.printStackTrace();

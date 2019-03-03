@@ -171,7 +171,7 @@ public class UserMeet extends Model<UserMeet> {
         this.acceptSex = acceptSex;
     }
 
-    public Integer getBgStatus() {
+    public Integer getStatus() {
         return status;
     }
 

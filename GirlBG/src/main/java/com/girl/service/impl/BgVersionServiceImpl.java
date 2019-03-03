@@ -2,6 +2,7 @@ package com.girl.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.girl.Common.constants.Constant;
 import com.girl.Common.enums.BgStatusEnum;
 import com.girl.Common.model.ResponseApi;
@@ -50,6 +51,7 @@ import static com.girl.Common.constants.Constant.DEFAULT_SIZE;
 @Service
 public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion> implements IBgVersionService {
 
+    public static final int PHONE_IOS = 1;
     @Autowired
     private BgVersionMapper bgVersionMapper;
 
@@ -82,23 +84,39 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
     }
 
     @Override
-    public ResponseApi uploadVersions(MultipartFile file, String token, String info,
-                                      String versionCode, String versionName, Integer updateType) throws GirlException {
+    public ResponseApi uploadVersions(MultipartFile file, String token, String info, String versionCode,
+                                      String versionName, Integer updateType, Integer phoneType) throws GirlException {
 
         try {
             if (RedisUtils.isTokenNull(redisService, token)) {
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
-            String apkUrl = getFileUrl(file);
-            BgVersion bgVersion = new BgVersion();
-            bgVersion.setCreateTime(new Date());
-            bgVersion.setInfo(info);
-            bgVersion.setUrl(apkUrl);
-            bgVersion.setUpdateType(updateType);
-            bgVersion.setVersionCode(versionCode);
-            bgVersion.setVersionName(versionName);
 
-            bgVersionMapper.insert(bgVersion);
+            //若无版本则上传
+            BgVersion bgVersion0 = new BgVersion();
+            bgVersion0.setPhoneType(phoneType);
+            if (bgVersionMapper.selectOne(bgVersion0) == null) {
+                BgVersion bgVersion = new BgVersion();
+                bgVersion.setCreateTime(new Date());
+                bgVersion.setInfo(info);
+                bgVersion.setUrl(file == null ? null : getFileUrl(file));
+                bgVersion.setUpdateType(updateType);
+                bgVersion.setVersionCode(versionCode);
+                bgVersion.setVersionName(versionName);
+                bgVersion.setPhoneType(phoneType);
+
+                bgVersionMapper.insert(bgVersion);
+            } else {
+                BgVersion bgVersion1 = new BgVersion();
+                bgVersion1.setUrl(file == null ? null : getFileUrl(file));
+                bgVersion1.setCreateTime(new Date());
+                bgVersion1.setVersionCode(versionCode);
+                bgVersion1.setVersionName(versionName);
+                bgVersion1.setUpdateType(updateType);
+                bgVersion1.setInfo(info);
+
+                bgVersionMapper.update(bgVersion1, getPhoneTypeWrapper(phoneType));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +126,13 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
         return new ResponseApi(BgStatusEnum.RESPONSE_OK);
     }
 
+    private Wrapper getPhoneTypeWrapper(Integer phoneType) {
+        Wrapper phoneTypeWapper = new EntityWrapper<BgVersion>().eq("phone_type", phoneType);
+        return phoneTypeWapper;
+    }
+
     public ResponseApi versionList(JSONObject text) {
+
         String token = text.getString("token");
         String current = text.getString("current");
         String size = text.getString("size");
@@ -137,7 +161,7 @@ public class BgVersionServiceImpl extends ServiceImpl<BgVersionMapper, BgVersion
                 redisService.get("QINIU_SECRETKEY").toString());
 
         UploadManager uploadManager = new UploadManager(cfg);
-        String uri = System.currentTimeMillis() + ".apk";
+        String uri = "yanzhigongshe" + ".apk";
         InputStream inputStream = file.getInputStream();
         try {
             UploadFileToQiNiu.uploadByInputStream(

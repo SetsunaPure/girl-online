@@ -15,7 +15,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author wangpei
- * @since 2018-12-13
+ * @since 2019-02-26
  */
 @TableName("bg_user")
 public class BgUser extends Model<BgUser> {
@@ -36,10 +36,14 @@ public class BgUser extends Model<BgUser> {
      */
     private String pwd;
     /**
-     * 是否是管理员
+     * 是否是管理员(0不是，1是)
      */
     @TableField("is_admin")
     private Integer isAdmin;
+    /**
+     * 客服账号
+     */
+    private String account;
 
 
     public Integer getUserId() {
@@ -74,6 +78,14 @@ public class BgUser extends Model<BgUser> {
         this.isAdmin = isAdmin;
     }
 
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.userId;
@@ -86,6 +98,7 @@ public class BgUser extends Model<BgUser> {
         ", name=" + name +
         ", pwd=" + pwd +
         ", isAdmin=" + isAdmin +
+        ", account=" + account +
         "}";
     }
 }

@@ -8,13 +8,17 @@ import com.girl.Common.model.*;
 import com.girl.Common.utils.RedisUtils;
 import com.girl.Common.utils.StringUtils;
 import com.girl.Exception.GirlException;
+import com.girl.core.entity.PubApiToken;
 import com.girl.core.entity.UserInfo;
 import com.girl.core.entity.UserReport;
+import com.girl.core.mapper.PubApiTokenMapper;
 import com.girl.core.mapper.UserInfoMapper;
 import com.girl.core.mapper.UserReportMapper;
 import com.girl.service.IUserReportService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.girl.service.RedisService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.girl.Common.constants.Constant.DEFAULT_CURRENT;
-import static com.girl.Common.constants.Constant.DEFAULT_SIZE;
+import static com.girl.Common.constants.Constant.*;
 
 /**
  * <p>
@@ -44,6 +47,11 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private PubApiTokenMapper pubApiTokenMapper;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public ResponseApi getUserManageStatus(JSONObject text) {
@@ -138,31 +146,59 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
         userReport.setStatus(lnStatus);
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setStatus(lnStatus);
+        userInfo.setStatus(lnStatus == REPORT_NO_PASS ? USER_SHIELD : USER_NORMAL);
 
+
+        //更新用户管理状态和用户表状态
         try {
             updateUserRecord(uid, userReport, userInfo, lnStatus);
         } catch (GirlException e) {
-            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, e.getMessage());
+            e.printStackTrace();
         }
+
+        dealCustToken(id);
 
         return new ResponseApi(BgStatusEnum.RESPONSE_OK);
     }
 
-    @Transactional
-    private void updateUserRecord(Integer uid, UserReport userReport, UserInfo userInfo, Integer status) throws GirlException {
+    private boolean dealCustToken(String id) {
         try {
-            if (status == 0){
-                //解冻
-                userReportMapper.delete(new EntityWrapper<UserReport>().eq("uid", uid));
-            }else {
+            //删除库中token及token缓存
+            PubApiToken pubApiToken = new PubApiToken();
+            pubApiToken.setLoginId(id);
+            String userToken = pubApiTokenMapper.selectOne(pubApiToken).getToken();
+            pubApiTokenMapper.delete(new EntityWrapper<PubApiToken>().eq("login_id", id));
+
+            if (redisService.exists("token:" + userToken)) {
+                redisService.remove("token:" + userToken);
+                logger.info("删除缓存成功");
+            } else {
+                logger.error("不存在此token值,token为：", userToken);
+                throw new GirlException(400, "不存在此token值");
+            }
+
+        } catch (GirlException e) {
+            return true;
+        } catch (Exception e){
+            return true;
+        }
+        return true;
+    }
+
+    @Transactional
+    void updateUserRecord(Integer uid, UserReport userReport, UserInfo userInfo, Integer status) throws GirlException {
+        try {
+//            if (status == REPORT_PASS) {
+                //解冻或许通过
+//                userReportMapper.delete(new EntityWrapper<UserReport>().eq("uid", uid));
+//            } else {
                 //冻结
                 userReportMapper.update(userReport, new EntityWrapper<UserReport>().eq("uid", uid));
-            }
+//            }
             userInfoMapper.update(userInfo, new EntityWrapper<UserInfo>().eq("id", uid));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new GirlException(400,"更新用户管理状态失败");
+            throw new GirlException(400, "更新用户管理状态失败");
         }
     }
 }

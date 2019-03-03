@@ -18,6 +18,8 @@ import com.girl.core.mapper.BgUserMapper;
 import com.girl.service.IBgUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.girl.service.RedisService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -49,15 +51,17 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
     @Autowired
     BgUserMapper userMapper;
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     @Transactional
-    public ResponseLogin login(JSONObject text){
+    public ResponseApi login(JSONObject text){
 
         String username = text.getString("username");
         String pwd = text.getString("password");
 
         if(!StringUtils.areNotEmpty(username, pwd)){
-            return new ResponseLogin(401, "用户名密码不能为空",null,null);
+            return new ResponseApi(401, "用户名密码不能为空",null);
         }
 
         BgUser bgUser = new BgUser();
@@ -65,19 +69,19 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
         BgUser rtBguser = bg.selectOne(bgUser);
 
         if(rtBguser == null){
-            return new ResponseLogin(BgStatusEnum.RESPONSE_USER_NOT_EXIST);
+            return new ResponseApi(BgStatusEnum.RESPONSE_USER_NOT_EXIST);
         }
 
         boolean isEq = pwd.equals(rtBguser.getPwd());
 
         if(!isEq){
-            return new ResponseLogin(BgStatusEnum.RESPONSE_PASSWORD_ERROR);
+            return new ResponseApi(BgStatusEnum.RESPONSE_PASSWORD_ERROR);
         }
 
-        String dbToken = bg.getTokenByName(username);
-        if(null != dbToken){
-            return new ResponseLogin(BgStatusEnum.RESPONSE_IS_LOGIN, dbToken);
-        }
+//        String dbToken = bg.getTokenByName(username);
+//        if(null != dbToken){
+//            return new ResponseApi(BgStatusEnum.RESPONSE_IS_LOGIN, dbToken);
+//        }
 
         String token = UUIDUtils.getToken();
 
@@ -92,7 +96,12 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
 
 //        List<BgUser> d = selectPage(new Page<BgUser>(1,50)).getRecords();
 
-        return new ResponseLogin(BgStatusEnum.RESPONSE_OK, token);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token", token);
+        jsonObject.put("name", rtBguser.getName());
+        jsonObject.put("is_admin", rtBguser.getIsAdmin());
+
+        return new ResponseApi(BgStatusEnum.RESPONSE_OK, jsonObject);
     }
 
     @Override
@@ -101,6 +110,9 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
             String token = text.getString("token");
             String name = text.getString("name");
             String pwd = text.getString("pwd");
+            String account = text.getString("account");
+            String isAdmin = text.getString("isAdmin");
+
             if(!StringUtils.areNotEmpty(name, pwd,token)){
                 return new ResponseApi(BgStatusEnum.RESPONSE_EMPTY, "用户名、参数、认证不能为空");
             }
@@ -109,6 +121,13 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
+            //校验参数重复
+            if(bg.selectCount(new EntityWrapper<BgUser>().eq("name", name)) != 0){
+                return new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
+            }
+            if(bg.selectCount(new EntityWrapper<BgUser>().eq("account", account)) != 0){
+                return new ResponseApi(BgStatusEnum.RESPONSE_COUNNT_ESIST);
+            }
 
             BgUser bu = new BgUser();
             bu.setName(name);
@@ -117,8 +136,15 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
                 return new ResponseApi(BgStatusEnum.RESPONSE_USER_EXIST);
             }
             bu.setPwd(pwd);
-            bu.setIsAdmin(0);
-            Integer res = bg.insert(bu);
+            bu.setIsAdmin(Integer.valueOf(isAdmin));
+            bu.setAccount(account);
+            bu.setName(name);
+            bg.insert(bu);
+            logger.info("新增客服成功");
+
+            JSONObject res = new JSONObject();
+            res.put("costomer_id",bg.selectOne(bu).getUserId());
+
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, res);
         }catch (Exception e){
             e.printStackTrace();
@@ -158,7 +184,7 @@ public class BgUserServiceImpl extends ServiceImpl<BgUserMapper, BgUser> impleme
                 return new ResponseApi(BgStatusEnum.RESPONSE_NOT_LOGIN, null);
             }
 
-            List<BgUser> users = userMapper.selectList(new EntityWrapper<BgUser>());
+            List<BgUser> users = userMapper.selectList(new EntityWrapper<BgUser>().where("name!='admin'"));
             return new ResponseApi(BgStatusEnum.RESPONSE_OK, users);
         }catch (Exception e){
             return new ResponseApi(BgStatusEnum.RESPONSE_ERROR, "读取客服列表失败");

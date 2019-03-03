@@ -1,5 +1,6 @@
 package com.girl.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -117,26 +118,33 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
             tixianStatus = userTixianMapper.update(userTixian,
                     new EntityWrapper<UserTixian>().where("id={0}", Integer.parseInt(id)));
 
+            UserTixian userTixian1 = new UserTixian();
+            userTixian1.setId(Long.parseLong(id));
             //激光推送提现消息
-            pushTixianMessages(id, tixianStatus, userTixian);
-
+            try {
+                pushTixianMessages(id, tixianStatus, userTixian1);
+            }catch (Exception e){
+                logger.error("推送提现消息给客户端失败");
+            }
             return new ResponseApi(RESPONSE_OK, tixianStatus);
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi(RESPONSE_ERROR, e.getMessage());
         }
     }
 
     private void pushTixianMessages(String id, Integer lnStatus, UserTixian ut) {
+        logger.info("提现条件："+ JSON.toJSON(ut));
         UserTixian userTixian = userTixianMapper.selectOne(ut);
-
+        logger.info("提现信息："+JSON.toJSON(userTixian));
         UserMsg userMsg = new UserMsg();
         userMsg.setSubType(30);
         userMsg.setBindId(Long.valueOf(id));
         userMsg.setUid(userTixian.getUid());
         userMsg.setCreateTime(new Date());
 
-        String money = ut.getMoney().toString();
+        String money = userTixian.getMoney().toString();
         //推送消息给用户
         if (lnStatus == 1) {
             userMsg.setMsg("您申请的提现￥" + money + "成功");
@@ -161,6 +169,7 @@ public class UserTixianServiceImpl extends ServiceImpl<UserTixianMapper, UserTix
 
         //激光推送提现消息
         UserNotice userNotice = new UserNotice();
+        logger.info("用户提现消息为：", JSON.toJSON(userMsg));
         userNotice.sendMessage(userMsg, userIcon, extend, "提现通知");
     }
 

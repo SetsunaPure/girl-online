@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IBgUserService extends IService<BgUser> {
 
-    ResponseLogin login(JSONObject text);
+    ResponseApi login(JSONObject text);
 
     ResponseApi addUser(JSONObject text);
 

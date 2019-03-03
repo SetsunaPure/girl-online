@@ -42,7 +42,7 @@ spring:
     enabled: true
 
   redis:
-    database: 1
+    database: 0
     timeout: 5000
     # Redis服务器地址
 #    host: 47.105.130.223

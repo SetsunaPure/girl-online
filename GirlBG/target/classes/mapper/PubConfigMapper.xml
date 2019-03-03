@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.girl.core.mapper.PubConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.girl.core.entity.PubConfig">
+        <id column="id" property="id" />
+        <result column="pid" property="pid" />
+        <result column="code" property="code" />
+        <result column="value" property="value" />
+        <result column="item_code" property="itemCode" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="sort" property="sort" />
+        <result column="creator" property="creator" />
+        <result column="creator_id" property="creatorId" />
+        <result column="create_time" property="createTime" />
+        <result column="modifier" property="modifier" />
+        <result column="modifier_id" property="modifierId" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, code, value, item_code AS itemCode, name, description, sort, creator, creator_id AS creatorId, create_time AS createTime, modifier, modifier_id AS modifierId, modify_time AS modifyTime
+    </sql>
+
+</mapper>

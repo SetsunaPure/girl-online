@@ -20,7 +20,7 @@ public interface IBgVersionService extends IService<BgVersion> {
     JSONObject getLatestVersion(int client);
 
     ResponseApi uploadVersions(MultipartFile file, String token, String info,
-                              String versionCode, String versionName, Integer updateType) throws GirlException;
+                              String versionCode, String versionName, Integer updateType, Integer phoneType) throws GirlException;
 
     ResponseApi versionList(JSONObject text);
 
