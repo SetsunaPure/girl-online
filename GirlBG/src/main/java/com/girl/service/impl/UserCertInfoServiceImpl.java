@@ -56,6 +56,9 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private UserNotice userNotice;
+
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -117,9 +120,10 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
 
             UserCertInfo uci = new UserCertInfo();
             uci.setStatus(Integer.parseInt(status));
+            uci.setId(Long.valueOf(id));
 
             Integer res = userCertInfoMapper.update(uci, new EntityWrapper<UserCertInfo>().eq("id", lnid));
-            userCertInfoMapper.updateInfoCert(lnid, lnStatus);
+            userCertInfoMapper.updateInfoCert(lnid, lnStatus== 2 ? 0 : 1);
             try {
                 //推送认证消息
                 pushCertMessages(id, lnStatus, uci);
@@ -169,7 +173,7 @@ public class UserCertInfoServiceImpl extends ServiceImpl<UserCertInfoMapper, Use
     }
 
     private void pushCertMessage( UserMsg userMsg, UserIcon userIcon, Map<String, String> extend) {
-        UserNotice userNotice = new UserNotice();
+//        UserNotice userNotice = new UserNotice();
         userNotice.sendMessage(userMsg, userIcon, extend, "认证通知");
     }
 

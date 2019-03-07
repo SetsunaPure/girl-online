@@ -16,4 +16,17 @@
         token, login_id AS loginId, create_time AS createTime, auths_id AS authsId, expiry_time AS expiryTime
     </sql>
 
+    <select id="getTokenByReportId" resultType="java.lang.String">
+        SELECT
+            token.token
+        FROM
+            pub_api_token token
+        LEFT JOIN
+            user_report report
+        ON
+            token.login_id = report.uid
+        WHERE
+            report.id = #{report_id}
+    </select>
+
 </mapper>

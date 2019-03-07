@@ -71,7 +71,8 @@ mybatis-plus:
                      classpath:/mapper/UserCertInfoMapper.xml,
                      classpath:/mapper/UserReportMapper.xml,
                      classpath:/mapper/BgTokenMapper.xml,
-                     classpath:/mapper/BgVersionMapper.xml
+                     classpath:/mapper/BgVersionMapper.xml,
+                     classpath:/mapper/UserMsgMapper.xml
   #实体扫描，多个package用逗号或者分号分隔i
   typeAliasesPackage: com.girl.core.entity.BgUser,
                         com.girl.core.entity.UserDynamic,

@@ -47,7 +47,7 @@
             info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
         </if>
         ORDER BY
-            meet.meet_time
+            meet.create_time
         DESC
     </select>
 

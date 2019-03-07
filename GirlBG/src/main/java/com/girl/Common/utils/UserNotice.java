@@ -8,11 +8,13 @@ import com.girl.core.mapper.UserMsgMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class UserNotice {
 
     @Autowired
@@ -24,19 +26,20 @@ public class UserNotice {
         userMsg.setType(30);
 
         try {
+            Date now = new Date();
             if (userMsg.getCreateTime() == null) {
-                userMsg.setCreateTime(new Date());
+                userMsg.setCreateTime(now);
             }
             Map<String, String> param = new HashMap<>();
 
             userMsgMapper.insert(userMsg);
 
-//            UserMsg userMsg1 = new UserMsg();
-//            userMsg1.setCreateTime(userMsg.getCreateTime());
-//            userMsg1.setUid(userMsg.getUid());
             logger.info("查询推送消息前：", JSON.toJSON(userMsg));
-            UserMsg userMsg2 = userMsgMapper.selectOne(userMsg);
-            logger.info("查询推送消息后：", JSON.toJSON(userMsg2));
+            UserMsg userMsg1 = new UserMsg();
+            userMsg1.setUid(userMsg.getUid());
+            userMsg1.setBindId(userMsg.getBindId());
+            UserMsg userMsg2 = userMsgMapper.selectOne(userMsg1);
+
             param.put("id", userMsg2.getId().toString());
             param.put("userIcon", JSONObject.toJSONString(userIcon));
             param.put("extend", JSONObject.toJSONString(extend));

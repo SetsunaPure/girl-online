@@ -152,37 +152,35 @@ public class UserReportServiceImpl extends ServiceImpl<UserReportMapper, UserRep
         //更新用户管理状态和用户表状态
         try {
             updateUserRecord(uid, userReport, userInfo, lnStatus);
+
         } catch (GirlException e) {
-            e.printStackTrace();
+            return new ResponseApi(BgStatusEnum.RESPONSE_ERROR);
         }
-
-        dealCustToken(id);
-
+        if(status.equals("2")) {
+            dealCustToken(uid);
+        }
         return new ResponseApi(BgStatusEnum.RESPONSE_OK);
     }
 
-    private boolean dealCustToken(String id) {
+    @Transactional
+    void dealCustToken(Integer id) {
         try {
             //删除库中token及token缓存
             PubApiToken pubApiToken = new PubApiToken();
-            pubApiToken.setLoginId(id);
-            String userToken = pubApiTokenMapper.selectOne(pubApiToken).getToken();
-            pubApiTokenMapper.delete(new EntityWrapper<PubApiToken>().eq("login_id", id));
+            pubApiToken.setLoginId(id.toString());
+            String userToken = pubApiTokenMapper.selectOne((pubApiToken)).getToken();
+
+            pubApiTokenMapper.delete(new EntityWrapper<PubApiToken>().eq("login_id", id.toString()));
 
             if (redisService.exists("token:" + userToken)) {
                 redisService.remove("token:" + userToken);
-                logger.info("删除缓存成功");
+                logger.info("删除token缓存成功");
             } else {
-                logger.error("不存在此token值,token为：", userToken);
-                throw new GirlException(400, "不存在此token值");
+                logger.error("不存在此token值,token为："+ userToken);
             }
-
-        } catch (GirlException e) {
-            return true;
-        } catch (Exception e){
-            return true;
+        }catch (Exception e){
+            logger.error("删除token缓存失败", e);
         }
-        return true;
     }
 
     @Transactional

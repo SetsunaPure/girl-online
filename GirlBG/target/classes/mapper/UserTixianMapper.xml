@@ -50,16 +50,17 @@
 
     <update id="updateDrawingStatus">
         UPDATE
-            user_identity uidentity,
-            user_tixian tixian
+          user_identity uidentity
+        JOIN
+          user_tixian tixian
+        ON
+          uidentity.uid = tixian.uid
         SET
-            uidentity.coin = uidentity.coin - tixian.coin
-        AND
-            tixian.`status` = 2
+          uidentity.coin = (uidentity.coin - tixian.coin)
         WHERE
-            uidentity.uid = tixian.uid
+          uidentity.uid = tixian.uid
         AND
-            tixian.id = #{id}
+          tixian.id = #{id}
     </update>
 
     <select id="getTixianCount" resultType="java.lang.Long">
