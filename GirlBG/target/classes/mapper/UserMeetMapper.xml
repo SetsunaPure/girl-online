@@ -31,6 +31,7 @@
             info.nick_name as nickname,
             meet.create_time as publishtime,
             meet.meet_time as meettime,
+            meet.meet_time_part as meetTimePart,
             meet.meet_place as meetplace,
             meet.title as purpose,
             meet.show_images as images

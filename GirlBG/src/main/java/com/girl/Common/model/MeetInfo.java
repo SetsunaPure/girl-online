@@ -15,8 +15,9 @@ public class MeetInfo {
 
     private String nickname;
 
-    //    private MeetContent meetContent;
     private Date meettime;
+
+    private Integer meetTimePart;
 
     private String meetplace;
 
@@ -78,6 +79,14 @@ public class MeetInfo {
 
     public void setMeettime(Date meettime) {
         this.meettime = meettime;
+    }
+
+    public Integer getMeetTimePart() {
+        return meetTimePart;
+    }
+
+    public void setMeetTimePart(Integer meetTimePart) {
+        this.meetTimePart = meetTimePart;
     }
 
     public String getMeetplace() {

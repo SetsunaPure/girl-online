@@ -31,6 +31,7 @@
             info.nick_name as nickname,
             meet.create_time as publishtime,
             meet.meet_time as meettime,
+            meet.meet_time_part as meetTimePart,
             meet.meet_place as meetplace,
             meet.title as purpose,
             meet.show_images as images
@@ -45,6 +46,8 @@
         <if test="search != null and search != ''">
             AND
             info.id LIKE '%${search}%' OR info.nick_name LIKE '%${search}%'
+            AND
+            meet.meet_time > NOW()
         </if>
         ORDER BY
             meet.create_time

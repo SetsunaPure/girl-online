@@ -63,7 +63,6 @@ public class UserMeetServiceImpl extends ServiceImpl<UserMeetMapper, UserMeet> i
             Page page = new Page(lnCurrent, lnSize);
 
             List<MeetInfo> lstMeetInfo = userMeetMapper.getMeetInfo(page, lnStatus, search);
-//            long count = userMeetMapper.selectCount(new EntityWrapper<UserMeet>().eq("status", lnStatus));
             long count = userMeetMapper.getMeetCount(lnStatus, search);
             ResponseData info = new ResponseData(count, lstMeetInfo);
 
